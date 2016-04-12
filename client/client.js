@@ -108,7 +108,7 @@ class Layout extends React.Component {
     //this.executeAction(newImageAction, newFile);
     }
 
-    fetch('http://localhost:4000/upload', {
+    fetch('http:localhost:4000/upload', {
       method: 'POST',
       data: file.photo
     })
