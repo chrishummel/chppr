@@ -1,4 +1,4 @@
-var db = require('./../../app/db');
+var db = require('../database/db');
 var Promise = require('bluebird');
 
 var Users = module.exports
@@ -20,6 +20,15 @@ Users.create = function (incomingAttrs) {
     });
 };
 
+Users.findById = function(userId){
+  return db('users').where({
+    uid: userId
+  })
+  .then(function(result){
+    console.log(result);
+    return result[0]
+  })
+}
 
 Users.verify = function (username, password) {
 	return db('users').where({
@@ -27,8 +36,8 @@ Users.verify = function (username, password) {
 			password: password,
 		}).limit(1)
 		.then(function (rows) {
-			return rows[0]
 			console.log('user is :' + rows[0]);
+      return rows[0]
 		})
 }
 
