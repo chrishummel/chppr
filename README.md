@@ -1,4 +1,5 @@
 # YumSnap!
+Version 2.0
 
 ## Database Setup
 
@@ -22,3 +23,4 @@ Do not CTRL-C to stop Postgres
 To stop your database:
 ```
 pg_ctl -D /usr/local/var/postgres stop -s -m fast
+
