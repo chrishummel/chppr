@@ -11,21 +11,35 @@ var Users = module.exports
 //}
 
 Users.create = function (incomingAttrs) {	
-	var attrs = Object.assign({}, incomingAttrs)
 	
-	return db('users').insert(attrs)
-    .then(function (result) {
-      // Prepare new user for outside world
-      return result[0];
-    });
+	return db('users').insert({
+    username: incomingAttrs.username,
+    facebook_id: incomingAttrs.facebook_id,
+    facebook_token: incomingAttrs.facebook_token
+  })
+  .then(function (result) {
+    console.log('inserted user', result);
+    return result[0];
+  });
 };
+
+Users.findByFacebookID = function(id){
+  return db('users').where({
+    facebook_id: id
+  })
+  .then(function(result){
+    console.log('found facebooker:', result);
+    return result[0];
+  })
+
+}
 
 Users.findById = function(userId){
   return db('users').where({
     uid: userId
   })
   .then(function(result){
-    console.log(result);
+    console.log('found id:',result);
     return result[0]
   })
 }
