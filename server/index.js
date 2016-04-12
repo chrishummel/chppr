@@ -14,8 +14,8 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var flash    = require('connect-flash'); // messages stored in session
 
-var Posts = require('./../client/models/posts');
-var Users = require('./../client/models/users');
+var Posts = require('./models/posts');
+var Users = require('./models/users');
 
 var routes = express.Router()
 var app = express()
@@ -26,9 +26,6 @@ app.use(webpackDevMiddleware(compiler, {
     stats: {colors: true}  
 }))
 
-//app.use(webpackHotMiddleware(compiler, {  
-//    log: console.log 
-//})) 
 // Parse incoming request bodies as JSON
 app.use(bodyParser.json())
 app.use(cookieParser());
@@ -39,14 +36,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes)
 
 
-
-
 // ---------- Routes Start Here ------------- //
 
 
 //Login route, default route
 routes.get('/', function(req, res) {
-	res.sendFile(assetFolder + '/login.html')
+	res.sendFile(assetFolder + '/index.html')
 })
 
 
@@ -63,9 +58,9 @@ routes.get('/feed', function (req, res) {
 })
 
 //get endpoint to serve up index.html
-routes.get('/dashboard', function (req, res) {
-	res.sendFile(assetFolder + '/index.html')
-})
+// routes.get('/dashboard', function (req, res) {
+// 	res.sendFile(assetFolder + '/index.html')
+// })
 
 routes.get('/pictures/')
 
@@ -149,7 +144,7 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 // route for passport
-require('./models/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+//require('./models/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // Static assets (html, etc.)
 var assetFolder = Path.resolve(__dirname, '../client')

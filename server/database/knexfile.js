@@ -5,8 +5,8 @@ module.exports = {
     connection: {
       database: 'yumsnap'
     },
-		migrations: {
-			directory: __dirname + '/migrations'
-		}
+    migrations: {
+      directory: __dirname + '/migrations'
+    }
   }
 }
