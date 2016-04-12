@@ -89,7 +89,7 @@ app.post('/categories', function(req, res) {
 app.get('/auth/facebook',
   passport.authenticate('facebook'));
 
-app.get('/auth/facebook/callback',
+app.get('/facebook/callbackURL',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
