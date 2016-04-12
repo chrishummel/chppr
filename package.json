@@ -4,7 +4,7 @@
   "description": "Twitter meets Yelp for Food",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "nodemon server/index.js --ignore client/",
+    "start": "nodemon server/server.js --ignore client/",
     "dev": "webpack-dev-server --content-base client --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "webpack -p"

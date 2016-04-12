@@ -35,15 +35,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Mount our main router
 app.use('/', routes)
 
-
 // ---------- Routes Start Here ------------- //
-
 
 //Login route, default route
 routes.get('/', function(req, res) {
 	res.sendFile(assetFolder + '/index.html')
 })
-
 
 //get endpoint for json obj for posts 
 routes.get('/feed', function (req, res) {
