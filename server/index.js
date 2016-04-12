@@ -131,15 +131,15 @@ routes.post('/login', function (req, res) {
 
 /////// NOTE TO FUTURE GROUPS //////
 /////// THIS ALMOST KINDA WORKS ////
-// routes.post('/upload', function (req, res) {
-// 	var file = req.body;
-//   console.log("req body:", file);
-//   var path = "./client/pictures/test4.jpg"
-//   fs.writeFile(path, file.preview, function(err) {
-//     if (err) {throw err};
-//     console.log('No errors!');
-//   })
-// })
+routes.post('/upload', function (req, res) {
+	var file = req.body;
+  console.log("req body:", file);
+  var path = "./client/pictures/test4.jpg"
+  fs.writeFile(path, file.preview, function(err) {
+    if (err) {throw err};
+    console.log('No errors!');
+  })
+})
 
 
 // required for passport

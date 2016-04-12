@@ -14,7 +14,10 @@ npm install -g knex
 ```
 Then start your database and run:
 ```
-postgres -D /usr/local/var/postgres
+//postgres -D /usr/local/var/postgres
+
+initdb db
+pg_ctl -D db -l logfile start
 createdb yumsnap
 knex migrate:latest
 knex seed:run

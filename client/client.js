@@ -46,9 +46,9 @@ class Layout extends React.Component {
   categorySelect(category) {
     this.setState({category});
   }
-  // photoInput(files) {
-  //   this.setState({photo: files});
-  // }
+  photoInput(files) {
+    this.setState({photo: files});
+  }
   dishNameInput(dishName) {
     this.setState({dishName: dishName});
   }
@@ -97,19 +97,27 @@ class Layout extends React.Component {
     }
     
     var file = {
-      photo: that.state.photo[0]
+      //photo: that.state.photo[0]
+      name:res.file.name,
+      size: res.file.size,
+      altText:'',
+      caption: '',
+      file:res.file,
+      url:res.imageUrl
+    };
+    //this.executeAction(newImageAction, newFile);
     }
 
-    // fetch('http://localhost:4000/upload', {
-    //   method: 'POST',
-    //   body: 'test'
-    // })
-    // .then(function() {
-    //   console.log("I think the file saved?");
-    // })
-    // .catch(function(err) {
-    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
-    // })
+    fetch('http://localhost:4000/upload', {
+      method: 'POST',
+      data: file.photo
+    })
+    .then(function() {
+      console.log("I think the file saved?", file.photo);
+    })
+    .catch(function(err) {
+      console.log("Yo, I'm pretty sure something didn't work...:", err);
+    })
 
   ////// VERY HACKY FIX //////
     if (this.state.dishRating !== '') {
@@ -205,7 +213,7 @@ class Layout extends React.Component {
           gfInput={this.gfInput.bind(this)}
           spicyInput={this.spicyInput.bind(this)}
           addCardSubmit={this.addCardSubmit.bind(this)}
-          // photoInput={this.photoInput.bind(this)}
+          photoInput={this.photoInput.bind(this)}
           photo={this.state.photo ? this.state.photo[0].preview : null}
           photoAdd={this.photoAdd.bind(this)}
           showAdd={this.state.showAdd}

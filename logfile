@@ -1,0 +1,13 @@
+LOG:  database system was shut down at 2016-04-12 14:08:13 CDT
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+ERROR:  insert or update on table "posts" violates foreign key constraint "posts_category_foreign"
+DETAIL:  Key (category)=(999) is not present in table "categories".
+STATEMENT:  insert into "posts" ("category", "dish_name", "gluten_free", "picture_path", "price", "rating", "rest_name", "spicy", "timestamp", "user_id", "veggie") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+ERROR:  insert or update on table "posts" violates foreign key constraint "posts_category_foreign"
+DETAIL:  Key (category)=(999) is not present in table "categories".
+STATEMENT:  insert into "posts" ("category", "dish_name", "gluten_free", "picture_path", "price", "rating", "rest_name", "spicy", "timestamp", "user_id", "veggie") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+ERROR:  insert or update on table "posts" violates foreign key constraint "posts_category_foreign"
+DETAIL:  Key (category)=(999) is not present in table "categories".
+STATEMENT:  insert into "posts" ("category", "dish_name", "gluten_free", "picture_path", "price", "rating", "rest_name", "spicy", "timestamp", "user_id", "veggie") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
