@@ -7,7 +7,7 @@ export default class AuthPanel extends React.Component {
     this.props.authToggle();
   }
   authStatus() {
-    return this.props.auth ? "LOGOUT" : "LOGIN";
+    return this.props.auth ? "Logout" : "Login with FB";
   }
   render() {
     console.log("AuthPanel props:", this.props);

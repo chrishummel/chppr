@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
 
+import Login from "./components/Login"
+
 import fetch from "node-fetch";
 import $ from 'jquery';
 
@@ -38,7 +40,10 @@ class Layout extends React.Component {
 
     this.getCardData();
   }
-
+  authToggle(){
+    this.setState({auth: !this.state.auth});
+    console.log(this.state.auth);
+  }
   stateToggle(event) {
     this.setState({[event]: !this.state[event]});
   }
@@ -185,6 +190,7 @@ class Layout extends React.Component {
         {/* Pass methods & state vars to Toolbar Component through props */}
         <Navbar
           auth={this.state.auth}
+          authToggle={this.authToggle.bind(this)}
           veg={this.state.veg}
           gf={this.state.gf}
           noSpice={this.state.noSpice}
@@ -194,6 +200,12 @@ class Layout extends React.Component {
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
         />
+        <br />
+        {this.state.auth ? <Login
+
+          /> : null
+        }
+
         <br/>
         { this.state.showAdd ? <AddCard 
           dishNameInput={this.dishNameInput.bind(this)}
