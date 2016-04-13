@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
 
+//import request from "request"
+import request from "superagent"
 import fetch from "node-fetch";
 import $ from 'jquery';
 
@@ -48,7 +50,57 @@ class Layout extends React.Component {
   }
   photoInput(files) {
     this.setState({photo: files});
+
+      // request('/upload')
+      //   .post('/client/pictures')
+      //   .set('Content-Type', 'image/png')
+      //   //.set('Content-Disposition', 'attachment; filename=')
+      //   .set('Content-Length', data.length)
+      //   .send(files[0])
+      //   })
+
+
+    // var file = files[0];
+    // console.log('my freakin file', file);
+    // request.post('/upload')
+    //   .set('Content-Type', 'image/png')
+    //   .set('Content-Length', file.length)
+    //   .attach('fieldname', file)
+    //   .end(function(err, file) {
+    //     if (err) {
+    //       console.error('error', err)
+    //     }
+    //   console.log("photoInput files", file);
+    // });
+
+        // files.forEach((file) => {
+        //   console.log('req filename:', file.name, file)
+        //   req.set('Content-Type', 'image/png');
+        //   req.set('Content-Length', file.length)
+        //   req.attach(file.name, file);
+        // });
+        // req.end(function(file) {
+        //   console.log("photoInput files", file);
+        // });
+        
+    const req = request.post('/upload');
+    
+    const data = new FormData();
+    files.forEach((file) => {
+      data.append('file', file);
+      console.log("photoInput file: ", data);
+    });
+    console.log('client data:', data)
+    req.send(data);
+    req.end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        console.log('client success', res);
+      }
+    });
   }
+
   dishNameInput(dishName) {
     this.setState({dishName: dishName});
   }
@@ -73,9 +125,9 @@ class Layout extends React.Component {
   spicyInput() {
     this.setState({spicyClick: !this.state.spicyClick});
   }
-  photoAdd(url) {
-    this.setState({photo: url})
-  }
+  // photoAdd(url) {
+  //   this.setState({photo: url})
+  // }
   catAdd(category) {
     this.setState({dishCat: category})
   }
@@ -97,60 +149,53 @@ class Layout extends React.Component {
     }
     
     var file = {
-      //photo: that.state.photo[0]
-      name:res.file.name,
-      size: res.file.size,
-      altText:'',
-      caption: '',
-      file:res.file,
-      url:res.imageUrl
+      photo: that.state.photo[0]
     };
     //this.executeAction(newImageAction, newFile);
-    }
 
-    fetch('http:localhost:4000/upload', {
-      method: 'POST',
-      data: file.photo
-    })
-    .then(function() {
-      console.log("I think the file saved?", file.photo);
-    })
-    .catch(function(err) {
-      console.log("Yo, I'm pretty sure something didn't work...:", err);
-    })
+    // fetch('/upload', {
+    //   method: 'POST',
+    //   body: file.photo
+    // })
+    // .then(function() {
+    //   console.log("I think the file saved?", file.photo);
+    // })
+    // .catch(function(err) {
+    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
+    // })
 
   ////// VERY HACKY FIX //////
-    if (this.state.dishRating !== '') {
+    // if (this.state.dishRating !== '') {
 
-      $.ajax({
-        type: "POST",
-        url: "/feed",
-        data: newDish,
-        // cache: false,
-        // processData: false,
-        // contentType: false
-      })
-      .done(function() {
-        console.log("New dish posted");
-        that.state.cardData.unshift(newDish);
-        that.setState({showAdd: false});
-        that.setState({
-          dishName: '',
-          restaurantName: '',
-          dishDescription: '',
-          dishPrice: '',
-          dishRating: '',
-          vegClick: false,
-          gfClick: false,
-          spicyClick: false,
-          photo: null,
-          dishCat: null
-        });
-      })
-      .fail(function() {
-        console.log("Failed to post new dish");
-      })
-    }
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "/feed",
+    //     data: newDish,
+    //     // cache: false,
+    //     // processData: false,
+    //     // contentType: false
+    //   })
+    //   .done(function() {
+    //     console.log("New dish posted");
+    //     that.state.cardData.unshift(newDish);
+    //     that.setState({showAdd: false});
+    //     that.setState({
+    //       dishName: '',
+    //       restaurantName: '',
+    //       dishDescription: '',
+    //       dishPrice: '',
+    //       dishRating: '',
+    //       vegClick: false,
+    //       gfClick: false,
+    //       spicyClick: false,
+    //       photo: null,
+    //       dishCat: null
+    //     });
+    //   })
+    //   .fail(function() {
+    //     console.log("Failed to post new dish");
+    //   })
+    // }
 
   }
 
@@ -215,7 +260,7 @@ class Layout extends React.Component {
           addCardSubmit={this.addCardSubmit.bind(this)}
           photoInput={this.photoInput.bind(this)}
           photo={this.state.photo ? this.state.photo[0].preview : null}
-          photoAdd={this.photoAdd.bind(this)}
+          
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}
@@ -235,3 +280,6 @@ class Layout extends React.Component {
 const app = document.getElementById('app');
 
 ReactDOM.render(<Layout/>, app);
+
+
+//photoAdd={this.photoAdd.bind(this)}

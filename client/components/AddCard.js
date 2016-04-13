@@ -39,9 +39,9 @@ export default class AddCard extends React.Component {
   handleSubmit() {
     this.props.addCardSubmit();
   }
-  handlePhoto(e) {
-    this.props.photoAdd(e.target.value);
-  }
+  // handlePhoto(e) {
+  //   this.props.photoAdd(e.target.value);
+  // }
   handleCatSelect(event, index, value) {
     console.log(value)
     this.props.catAdd(value);
