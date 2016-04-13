@@ -13,13 +13,12 @@ module.exports = function(passport) {
 // required for persistent login sessions : passport needs to serialize and unserialize users out of session
   
   passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    console.log('serialize user:', user)
+    done(null, user.facebook_id);
   });
 
   passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
-      done(err, user);
-    });
+    done(null, id);
   });
 
 // FACEBOOK
@@ -34,11 +33,9 @@ passport.use(new FacebookStrategy({
   // facebook will send back the token and profile
   function(token, refreshToken, profile, done) {
 
-      process.nextTick(function() {
+     // process.nextTick(function() {
           User.findByFacebookID(profile.id)
-            .then(function(err, user) {
-              if (err)
-                return done(err);
+            .then(function(user) {
               if (user) {
                 return done(null, user); 
               } else {
@@ -49,13 +46,14 @@ passport.use(new FacebookStrategy({
 
                 User.create(newUser)
                   .then(function(){
+                    console.log('create user:', newUser)
                     delete newUser.facebook_token;
                     return done(null, newUser);
                   });
               } 
 
             });
-        });
+        //});
 
     }));
 // fb token close FN

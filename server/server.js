@@ -41,8 +41,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Login route, default route
 app.get('/', function(req, res) {
-	res.sendFile(assetFolder + '/index.html')
+  console.log('passport logged in: ', req.user)
+  res.sendFile(assetFolder + '/index.html')
 })
+
 
 //get endpoint for json obj for posts 
 app.get('/feed', function (req, res) {
@@ -99,9 +101,10 @@ app.get('/auth/facebook',
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
+    console.log('before redirect')
     res.redirect('/');
   });
+
 
 //Signup And login routes will be changed/deleted once auth is set up
 // app.post('/signup', function(req, res) {
