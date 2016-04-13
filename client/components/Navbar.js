@@ -97,6 +97,8 @@ export default class Navbar extends React.Component {
         <ToolbarGroup float="right">
           <AuthPanel 
             authToggle={this.props.authToggle.bind(this)}
+            auth={this.props.auth}
+            getFBToken={this.props.getFBToken.bind(this)}
           />
         </ToolbarGroup>
       </Toolbar>

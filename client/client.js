@@ -40,6 +40,9 @@ class Layout extends React.Component {
 
     this.getCardData();
   }
+  getFBToken(){
+    console.log('calling something');
+  }
   authToggle(){
     this.setState({auth: !this.state.auth});
     console.log(this.state.auth);
@@ -191,6 +194,7 @@ class Layout extends React.Component {
         <Navbar
           auth={this.state.auth}
           authToggle={this.authToggle.bind(this)}
+          getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
           gf={this.state.gf}
           noSpice={this.state.noSpice}
