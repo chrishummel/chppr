@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
 
 var passport = require('passport')
+var configPassport = require('./config/passport')(passport)
 var flash    = require('connect-flash'); // messages stored in session
 
 var Posts = require('./models/posts');
@@ -24,6 +25,12 @@ app.use(webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,  
     stats: {colors: true}  
 }))
+
+// required for passport
+app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
 // Parse incoming request bodies as JSON
 app.use(bodyParser.json())
@@ -89,7 +96,7 @@ app.post('/categories', function(req, res) {
 app.get('/auth/facebook',
   passport.authenticate('facebook'));
 
-app.get('/facebook/callbackURL',
+app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -139,11 +146,6 @@ app.get('/facebook/callbackURL',
 // })
 
 
-// required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 // route for passport
 //require('./models/app.js')(app, passport); // load our routes and pass in our app and fully configured passport
