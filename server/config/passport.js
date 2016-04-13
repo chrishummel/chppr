@@ -13,12 +13,15 @@ module.exports = function(passport) {
 // required for persistent login sessions : passport needs to serialize and unserialize users out of session
   
   passport.serializeUser(function(user, done) {
-    console.log('serialize user:', user)
     done(null, user.facebook_id);
   });
 
   passport.deserializeUser(function(id, done) {
-    done(null, id);
+    User.findByFacebookID(id)
+      .then(function(user){
+        done(null, user);
+      })
+    
   });
 
 // FACEBOOK
@@ -26,29 +29,32 @@ passport.use(new FacebookStrategy({
       
       clientID        : configAuth.facebookAuth.clientID,
       clientSecret    : configAuth.facebookAuth.clientSecret,
-      callbackURL     : configAuth.facebookAuth.callbackURL
+      callbackURL     : configAuth.facebookAuth.callbackURL,
+      profileFields   : ['id', 'displayName', 'picture.type(large)']
 
     },
 
   // facebook will send back the token and profile
   function(token, refreshToken, profile, done) {
-
+      console.log('facebook profile: ',profile)
      // process.nextTick(function() {
           User.findByFacebookID(profile.id)
             .then(function(user) {
               if (user) {
                 return done(null, user); 
               } else {
+
                 var newUser = {}
                 newUser.facebook_id    = profile.id;                    
                 newUser.facebook_token = token;                    
                 newUser.username       = profile.displayName;
+                newUser.photo          = profile.photos[0].value;
 
                 User.create(newUser)
                   .then(function(){
                     console.log('create user:', newUser)
                     delete newUser.facebook_token;
-                    return done(null, newUser);
+                    return done(null, newUser); //passed to serializeUser
                   });
               } 
 
