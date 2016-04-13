@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
 
 var passport = require('passport')
+var configPassport = require('./config/passport')(passport)
 var flash    = require('connect-flash'); // messages stored in session
 
 var Posts = require('./models/posts');
@@ -25,6 +26,12 @@ app.use(webpackDevMiddleware(compiler, {
     stats: {colors: true}  
 }))
 
+// required for passport
+app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+
 // Parse incoming request bodies as JSON
 app.use(bodyParser.json())
 app.use(cookieParser());
@@ -34,8 +41,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Login route, default route
 app.get('/', function(req, res) {
-	res.sendFile(assetFolder + '/index.html')
+  console.log('passport logged in: ', req.user)
+  res.sendFile(assetFolder + '/index.html')
 })
+
 
 //get endpoint for json obj for posts 
 app.get('/feed', function (req, res) {
@@ -92,9 +101,10 @@ app.get('/auth/facebook',
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
+    console.log('before redirect')
     res.redirect('/');
   });
+
 
 //Signup And login routes will be changed/deleted once auth is set up
 // app.post('/signup', function(req, res) {
@@ -139,11 +149,6 @@ app.get('/auth/facebook/callback',
 // })
 
 
-// required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 // route for passport
 //require('./models/app.js')(app, passport); // load our routes and pass in our app and fully configured passport

@@ -6,7 +6,8 @@ console.log('at start of migration')
 		knex.schema.createTable('users', function(table){
 			table.increments('uid').primary();
 			table.string('username').unique();
-			table.string('password')
+			table.string('facebook_id');
+			table.string('facebook_token')
 		}),
 		
 		//categories table
