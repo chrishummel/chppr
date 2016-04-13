@@ -41,7 +41,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Login route, default route
 app.get('/', function(req, res) {
-  console.log('passport logged in: ', req.user)
+  console.log("Is there a req.user: ", req.user ? req.user : 'Nope')
+  if (req.user) {
+    res.cookie('yummy', JSON.stringify(req.user))
+  }
   res.sendFile(assetFolder + '/index.html')
 })
 
@@ -95,13 +98,13 @@ app.post('/categories', function(req, res) {
 })
 
 
-app.get('/auth/facebook',
-  passport.authenticate('facebook'));
+app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     console.log('before redirect')
+
     res.redirect('/');
   });
 
