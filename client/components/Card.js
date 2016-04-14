@@ -9,8 +9,17 @@ import CardText from 'material-ui/lib/card/card-text';
 
 export default class DishCard extends React.Component {
 
-  render() {
+  getUserName(obj){
+    if (obj && obj.username !== 'undefined') return obj.username;
+    return 'A User';
+  }
 
+  getCategoryName(obj){
+    if (obj && obj.type !== 'undefined') return obj.type;
+    return 'Some Category';
+  }
+  render() {
+    console.log('our userdata:',this.props.userData);
     const cardStyle = {
       padding: "30px",
       height: "650px"
@@ -36,13 +45,14 @@ export default class DishCard extends React.Component {
     };
 
     return (
+
       <div className="cardWrapper col-sm-6 col-lg-4" style={cardWrapperStyle}>
         <Card
           className=""
           style={cardStyle}>
           <CardHeader
-            title={"User Number "+ this.props.data.user_id}
-            subtitle={"Category Number "+ this.props.data.category}
+            title={"User: "+ this.getUserName(this.props.userData[this.props.data.uid])}
+            subtitle={"Category: "+ this.getCategoryName(this.props.categoryData[this.props.data.category - 1])}
             avatar="http://lorempixel.com/200/200/"
           />
           <CardMedia style={cardMediaStyle}>

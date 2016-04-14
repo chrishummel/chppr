@@ -156,6 +156,28 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
   });
 
+app.get('/users', function (req, res) {
+	Users.getUsers()
+	.then(function(users){
+		res.status(201).send(users);
+	})
+	.catch(function (err) {
+				console.log('Error getting users: ', err);
+				return res.status(404).send(err);
+	})
+})
+
+//get endpoint for json obj for categories 
+app.get('/categories', function (req, res) {
+	Users.getCategories()
+	.then(function(categories){
+		res.status(201).send(categories);
+	})
+	.catch(function (err) {
+				console.log('Error getting categories: ', err);
+				return res.status(404).send(err);
+	})
+})
 // Static assets (html, etc.)
 var assetFolder = Path.resolve(__dirname, '../client')
 app.use(express.static(assetFolder))

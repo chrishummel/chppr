@@ -66,7 +66,13 @@ export default class Navbar extends React.Component {
     return (
       <Toolbar style={styles.toolbar}>
         <ToolbarTitle style={styles.title} text="YumSnap!" />
-        <RaisedButton primary={true} onClick={this.handleShowAdd.bind(this)} label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} default={true} style={styles.button} />  
+        <RaisedButton 
+          primary={true} 
+          onClick={this.handleShowAdd.bind(this)} 
+          label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} 
+          default={true} style={styles.button} 
+          disabled={!this.props.yummy}
+        />  
         
         <ToolbarGroup firstChild={true} float="left">
           <DropDownMenu style={styles.dropdown} value={this.props.category} onChange={this.handleCategory.bind(this)}>
