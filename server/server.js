@@ -9,9 +9,17 @@ var compiler = webpack(config)
 var Path = require('path')
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var KnexSessionStore = require('connect-session-knex')(session);
+var knexPg = require('knex')({
+  client: 'postgresql',
+  connection: {
+    database: 'yumsnap'
+  }
+});
 
 var passport = require('passport')
+var configPassport = require('./config/passport')(passport)
 var flash    = require('connect-flash'); // messages stored in session
 var fs = require('fs');
 //var formidable = require('formidable');
@@ -33,13 +41,31 @@ var upload = multer({ storage: storage })
 var Posts = require('./models/posts');
 var Users = require('./models/users');
 
-var app = express()
+var app = express();
 
+var store = new KnexSessionStore({
+  knex: knexPg,
+  tablename: 'sessions'
+});
 
 app.use(webpackDevMiddleware(compiler, {  
     publicPath: config.output.publicPath,  
     stats: {colors: true}  
 }))
+
+// required for passport
+app.use(session({ 
+  secret: 'ilovescotchscotchyscotchscotch',
+  store: store,
+  cookie: {
+    maxAge: 30 * 60 * 1000
+  }  
+
+})); // session secret
+
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
 // Parse incoming request bodies as JSON
 app.use(bodyParser.json())
@@ -50,8 +76,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //Login route, default route
 app.get('/', function(req, res) {
-	res.sendFile(assetFolder + '/index.html')
+  console.log("Is there a req.user: ", req.user ? req.user : 'Nope')
+  if (req.user) {
+    res.cookie('yummy', JSON.stringify(req.user))
+  }
+  res.sendFile(assetFolder + '/index.html')
 })
+
 
 //get endpoint for json obj for posts 
 app.get('/feed', function (req, res) {
@@ -65,6 +96,10 @@ app.get('/feed', function (req, res) {
 	})
 })
 
+app.get('/logout', function(req,res) {
+  req.session.destroy();
+  res.redirect('/');
+})
 //get endpoint to serve up index.html
 // app.get('/dashboard', function (req, res) {
 // 	res.sendFile(assetFolder + '/index.html')
@@ -115,15 +150,16 @@ app.post('/categories', function(req, res) {
 })
 
 
-app.get('/auth/facebook',
-  passport.authenticate('facebook'));
+app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
+    console.log('before redirect')
+
     res.redirect('/');
   });
+
 
 //Signup And login routes will be changed/deleted once auth is set up
 // app.post('/signup', function(req, res) {
@@ -169,14 +205,6 @@ app.get('/auth/facebook/callback',
 //     res.status(201).send(file);
 //   })  
 // })
-
-
-
-// required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 // route for passport
 //require('./models/app.js')(app, passport); // load our routes and pass in our app and fully configured passport

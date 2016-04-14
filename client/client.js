@@ -102,6 +102,7 @@ class Layout extends React.Component {
   addCardSubmit() {
 
     var newDish = {
+
           // TODO - figure out categories and users
           "user_id": 5,
           "category": this.state.dishCat,
@@ -115,8 +116,21 @@ class Layout extends React.Component {
           "spicy": this.state.spicyClick,
           "rating": this.state.dishRating
         }
-        
-        console.log('new dish:', newDish)
+    
+    var file = {
+      photo: that.state.photo[0]
+    }
+
+    // fetch('http://localhost:4000/upload', {
+    //   method: 'POST',
+    //   body: 'test'
+    // })
+    // .then(function() {
+    //   console.log("I think the file saved?");
+    // })
+    // .catch(function(err) {
+    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
+    // })
 
     // var data = new FormData();
     // data.append( "json", JSON.stringify( newDish ) );
