@@ -35,6 +35,7 @@ class Layout extends React.Component {
       gfClick: false,
       spicyClick: false,
       photo: null,
+      viewPhoto: null,
       dishCat: 999
     };
 
@@ -49,7 +50,8 @@ class Layout extends React.Component {
     this.setState({category});
   }
   photoInput(files) {
-        
+    this.setState({viewPhoto: files}); 
+
     const req = request.post('/upload');
     console.log("original files: ", files);
     const data = new FormData();
@@ -100,7 +102,7 @@ class Layout extends React.Component {
     this.setState({dishCat: category})
   }
   addCardSubmit() {
-
+    var that = this;
     var newDish = {
 
           // TODO - figure out categories and users
@@ -131,6 +133,21 @@ class Layout extends React.Component {
       })
     .then(function (data) {  
       console.log('Request succeeded with JSON response', data);  
+      console.log("New dish posted");
+        that.state.cardData.unshift(newDish);
+        that.setState({showAdd: false});
+        that.setState({
+          dishName: '',
+          restaurantName: '',
+          dishDescription: '',
+          dishPrice: '',
+          dishRating: '',
+          vegClick: false,
+          gfClick: false,
+          spicyClick: false,
+          photo: null,
+          dishCat: null
+        })
     })  
     .catch(function (error) {  
       console.log('Request failed', error);  
@@ -237,7 +254,7 @@ class Layout extends React.Component {
           addCardSubmit={this.addCardSubmit.bind(this)}
           photoInput={this.photoInput.bind(this)}
           photo={this.state.photo ? this.state.photo[0].preview : null}
-          
+          viewPhoto={this.state.viewPhoto ? this.state.viewPhoto[0].preview : null}
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}

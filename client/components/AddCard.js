@@ -84,7 +84,7 @@ export default class AddCard extends React.Component {
             <Dropzone multiple={false} accept={'image/*'} onDrop={this.onDrop.bind(this)}>
               <div style={styles.text}>Drag your photo here, or click to select a file to upload.</div>
             </Dropzone>
-            {this.props.photo ? <div><br/>Image Preview: <br/><img width='250' src={this.props.photo} /></div> : null} 
+            {this.props.viewPhoto ? <div><br/>Image Preview: <br/><img width='250' src={this.props.viewPhoto} /></div> : null} 
           </div>
           <br/>
           <TextField
