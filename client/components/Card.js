@@ -6,8 +6,30 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import RaisedButton from 'material-ui/lib/raised-button';
 import CardText from 'material-ui/lib/card/card-text';
+import FlatButton from 'material-ui/lib/flat-button'
 
 export default class DishCard extends React.Component {
+
+  addToFavorites() {
+    var that = this;
+    var fav = {
+      user_id: 1,
+      post_id: 1
+    }
+    let data = JSON.stringify(fav);
+
+    fetch('http://localhost:4000/myfavs', {  
+        method: 'post',  
+         headers: {  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: data   
+    })
+    .then(function(resp){
+      console.log('addfavs response: ', resp)
+    })
+  }
 
   render() {
 
@@ -62,6 +84,9 @@ export default class DishCard extends React.Component {
               {this.props.data.veggie ? " [🌽]" : ""}
             </span>
           </row>
+          <CardActions>
+            <FlatButton label="Add to Favorites" onClick={this.addToFavorites} />
+          </CardActions>
         </Card>
       </div>
     );
