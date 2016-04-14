@@ -9,6 +9,9 @@ import CardFeed from "./components/CardFeed"
 
 import Login from "./components/Login"
 
+import request from "superagent"
+import cookie from 'react-cookie';
+
 import fetch from "node-fetch";
 import $ from 'jquery';
 
@@ -18,6 +21,7 @@ class Layout extends React.Component {
   constructor() {
     super();
     this.state = {
+      yummy: cookie.load('yummy'),
       auth: false,
       veg: false,
       gf: false,
@@ -41,11 +45,36 @@ class Layout extends React.Component {
     this.getCardData();
   }
   getFBToken(){
-    console.log('calling something');
+    //console.log('calling something');
+    request.get('/auth/facebook')
+    .end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        console.log('client success', res);
+      }
+    });
   }
-  authToggle(){
-    this.setState({auth: !this.state.auth});
-    console.log(this.state.auth);
+  authToggle(status){
+    if(status == 'logout'){
+      cookie.remove('yummy', { path: '/' });
+
+      request.get('/logout');
+      request.end((err, res) => {
+        if (err) {
+          console.log('client error', err);
+        } else {
+          console.log(res);
+        }
+      }
+
+
+      console.log('deleted')
+      this.state.yummy = {};
+
+    } else {
+      this.setState({auth: !this.state.auth});
+    }
   }
   stateToggle(event) {
     this.setState({[event]: !this.state[event]});
@@ -54,9 +83,59 @@ class Layout extends React.Component {
   categorySelect(category) {
     this.setState({category});
   }
-  // photoInput(files) {
-  //   this.setState({photo: files});
-  // }
+  photoInput(files) {
+    this.setState({photo: files});
+
+      // request('/upload')
+      //   .post('/client/pictures')
+      //   .set('Content-Type', 'image/png')
+      //   //.set('Content-Disposition', 'attachment; filename=')
+      //   .set('Content-Length', data.length)
+      //   .send(files[0])
+      //   })
+
+
+    // var file = files[0];
+    // console.log('my freakin file', file);
+    // request.post('/upload')
+    //   .set('Content-Type', 'image/png')
+    //   .set('Content-Length', file.length)
+    //   .attach('fieldname', file)
+    //   .end(function(err, file) {
+    //     if (err) {
+    //       console.error('error', err)
+    //     }
+    //   console.log("photoInput files", file);
+    // });
+
+        // files.forEach((file) => {
+        //   console.log('req filename:', file.name, file)
+        //   req.set('Content-Type', 'image/png');
+        //   req.set('Content-Length', file.length)
+        //   req.attach(file.name, file);
+        // });
+        // req.end(function(file) {
+        //   console.log("photoInput files", file);
+        // });
+        
+    const req = request.post('/upload');
+    
+    const data = new FormData();
+    files.forEach((file) => {
+      data.append('file', file);
+      console.log("photoInput file: ", data);
+    });
+    console.log('client data:', data)
+    req.send(data);
+    req.end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        console.log('client success', res);
+      }
+    });
+  }
+
   dishNameInput(dishName) {
     this.setState({dishName: dishName});
   }
@@ -81,9 +160,9 @@ class Layout extends React.Component {
   spicyInput() {
     this.setState({spicyClick: !this.state.spicyClick});
   }
-  photoAdd(url) {
-    this.setState({photo: url})
-  }
+  // photoAdd(url) {
+  //   this.setState({photo: url})
+  // }
   catAdd(category) {
     this.setState({dishCat: category})
   }
@@ -106,51 +185,52 @@ class Layout extends React.Component {
     
     var file = {
       photo: that.state.photo[0]
-    }
+    };
+    //this.executeAction(newImageAction, newFile);
 
-    // fetch('http://localhost:4000/upload', {
+    // fetch('/upload', {
     //   method: 'POST',
-    //   body: 'test'
+    //   body: file.photo
     // })
     // .then(function() {
-    //   console.log("I think the file saved?");
+    //   console.log("I think the file saved?", file.photo);
     // })
     // .catch(function(err) {
     //   console.log("Yo, I'm pretty sure something didn't work...:", err);
     // })
 
   ////// VERY HACKY FIX //////
-    if (this.state.dishRating !== '') {
+    // if (this.state.dishRating !== '') {
 
-      $.ajax({
-        type: "POST",
-        url: "/feed",
-        data: newDish,
-        // cache: false,
-        // processData: false,
-        // contentType: false
-      })
-      .done(function() {
-        console.log("New dish posted");
-        that.state.cardData.unshift(newDish);
-        that.setState({showAdd: false});
-        that.setState({
-          dishName: '',
-          restaurantName: '',
-          dishDescription: '',
-          dishPrice: '',
-          dishRating: '',
-          vegClick: false,
-          gfClick: false,
-          spicyClick: false,
-          photo: null,
-          dishCat: null
-        });
-      })
-      .fail(function() {
-        console.log("Failed to post new dish");
-      })
-    }
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "/feed",
+    //     data: newDish,
+    //     // cache: false,
+    //     // processData: false,
+    //     // contentType: false
+    //   })
+    //   .done(function() {
+    //     console.log("New dish posted");
+    //     that.state.cardData.unshift(newDish);
+    //     that.setState({showAdd: false});
+    //     that.setState({
+    //       dishName: '',
+    //       restaurantName: '',
+    //       dishDescription: '',
+    //       dishPrice: '',
+    //       dishRating: '',
+    //       vegClick: false,
+    //       gfClick: false,
+    //       spicyClick: false,
+    //       photo: null,
+    //       dishCat: null
+    //     });
+    //   })
+    //   .fail(function() {
+    //     console.log("Failed to post new dish");
+    //   })
+    // }
 
   }
 
@@ -193,6 +273,7 @@ class Layout extends React.Component {
         {/* Pass methods & state vars to Toolbar Component through props */}
         <Navbar
           auth={this.state.auth}
+          yummy={this.state.yummy}
           authToggle={this.authToggle.bind(this)}
           getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
@@ -221,9 +302,9 @@ class Layout extends React.Component {
           gfInput={this.gfInput.bind(this)}
           spicyInput={this.spicyInput.bind(this)}
           addCardSubmit={this.addCardSubmit.bind(this)}
-          // photoInput={this.photoInput.bind(this)}
+          photoInput={this.photoInput.bind(this)}
           photo={this.state.photo ? this.state.photo[0].preview : null}
-          photoAdd={this.photoAdd.bind(this)}
+          
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}
@@ -243,3 +324,6 @@ class Layout extends React.Component {
 const app = document.getElementById('app');
 
 ReactDOM.render(<Layout/>, app);
+
+
+//photoAdd={this.photoAdd.bind(this)}

@@ -14,9 +14,24 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var configPassport = require('./config/passport')(passport)
 var flash    = require('connect-flash'); // messages stored in session
-
+var fs = require('fs');
+var formidable = require('formidable');
+var multer  = require('multer')
+//var upload = multer({ dest: './client/pictures/' })
 var Posts = require('./models/posts');
 var Users = require('./models/users');
+
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, __dirname + '../client/pictures');   
+  },
+  filename: function(req, file, cb) {
+    console.log('filename file.name:', file.name)
+    cb(null, file.name);
+  } 
+})
+
+var upload = multer({storage: storage});
 
 var app = express()
 
@@ -35,7 +50,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // Parse incoming request bodies as JSON
 app.use(bodyParser.json())
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ---------- Routes Start Here ------------- //
 
@@ -66,7 +81,7 @@ app.get('/feed', function (req, res) {
 // 	res.sendFile(assetFolder + '/index.html')
 // })
 
-app.get('/pictures/')
+// app.get('/pictures/')
 
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
@@ -141,16 +156,46 @@ app.get('/auth/facebook/callback',
 
 /////// NOTE TO FUTURE GROUPS //////
 /////// THIS ALMOST KINDA WORKS ////
+
 // app.post('/upload', function (req, res) {
 // 	var file = req.body;
-//   console.log("req body:", file);
-//   var path = "./client/pictures/test4.jpg"
-//   fs.writeFile(path, file.preview, function(err) {
-//     if (err) {throw err};
+//   console.log("req body:", req.files);
+
+//   var path = "./client/pictures/" + file.name;
+//   fs.writeFile(path, file, function(err) {
+//     if (err) {throw err;};
 //     console.log('No errors!');
-//   })
+//     res.status(201).send(file);
+//   })  
 // })
 
+
+
+//
+
+app.post('/upload', upload.any(), function (req, res) {
+    console.log('req.file:', req.file);
+    console.log('req.body:', req.body);
+    
+      res.send(req.file);
+  })
+  
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+ 
+
+// app.post('/upload', function(req, res){
+//     // parse a file upload 
+//     var form = new formidable.IncomingForm();
+
+//     console.log('server form: ', form);
+ 
+//     // form.parse(req, function(err, fields, files) {
+//     //   res.writeHead(200, {'content-type': 'text/plain'});
+//     //   res.write('received upload:\n\n');
+//     //   res.end(util.inspect({fields: fields, files: files}));
+//     // });
+//  });
 
 
 // route for passport

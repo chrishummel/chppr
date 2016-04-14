@@ -4,11 +4,15 @@ import Popover from 'material-ui/lib/popover/popover';
 
 export default class AuthPanel extends React.Component {
   handleAuth() {
-    console.log("login pressed");
-    this.props.authToggle();
+    if(this.props.yummy){
+      this.props.authToggle('logout');
+    } else {
+      console.log("login pressed");
+      this.props.authToggle('login');
+    }
   }
   authStatus() {
-    return this.props.auth ? "Logout" : "Login";
+    return this.props.yummy ? "Logout" : "Login";
   }
   fbAuth(event){
     this.props.getFBToken();
@@ -25,6 +29,13 @@ export default class AuthPanel extends React.Component {
     };
     return (
       <div>
+        {this.props.yummy ? 
+          <div class="user">
+            <img src={this.props.yummy.photo} />
+            <p>Logged in as:<br/>{this.props.yummy.username}</p>
+          </div>
+          
+         : null}
         <RaisedButton 
           onClick={this.handleAuth.bind(this)} 
           label={this.authStatus()} 
@@ -38,10 +49,7 @@ export default class AuthPanel extends React.Component {
           
         >
           <div style={styles.popover}>
-            <RaisedButton 
-              primary={true} 
-              onClick={this.fbAuth.bind(this)}
-              label="Login with Facebook"/>
+            <a href="/auth/facebook">Login with Facebook</a>
           </div>
         </Popover>
       </div>

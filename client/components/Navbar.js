@@ -33,6 +33,7 @@ export default class Navbar extends React.Component {
   }
 
   render () {
+    console.log('navbar props',this.props)
     const styles = {
       title: {
         color: "red",
@@ -98,6 +99,7 @@ export default class Navbar extends React.Component {
           <AuthPanel 
             authToggle={this.props.authToggle.bind(this)}
             auth={this.props.auth}
+            yummy={this.props.yummy}
             getFBToken={this.props.getFBToken.bind(this)}
           />
         </ToolbarGroup>
