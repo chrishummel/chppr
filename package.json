@@ -55,6 +55,7 @@
     "passport-twitter": "^1.0.4",
     "pg": "^4.5.2",
     "react": "^0.14.8",
+    "react-cookie": "^0.4.5",
     "react-dom": "^0.14.8",
     "react-dropzone": "^3.3.4",
     "react-router": "^2.0.1",

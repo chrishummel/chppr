@@ -7,8 +7,11 @@ import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
 
-//import request from "request"
+import Login from "./components/Login"
+
 import request from "superagent"
+import cookie from 'react-cookie';
+
 import fetch from "node-fetch";
 import $ from 'jquery';
 
@@ -18,6 +21,7 @@ class Layout extends React.Component {
   constructor() {
     super();
     this.state = {
+      yummy: cookie.load('yummy'),
       auth: false,
       veg: false,
       gf: false,
@@ -41,7 +45,36 @@ class Layout extends React.Component {
 
     this.getCardData();
   }
+  getFBToken(){
+    //console.log('calling something');
+    request.get('/auth/facebook')
+    .end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        console.log('client success', res);
+      }
+    });
+  }
+  authToggle(status){
+    if(status == 'logout'){
+      cookie.remove('yummy', { path: '/' });
+      request('GET', '/logout').end(function(err,res){
+        if (err) {
+          console.log('client error', err);
+        } else {
+          console.log(res);
+        }
+      });
+      
 
+
+      console.log('deleted')
+      this.setState({yummy:null});
+    } else {
+      this.setState({auth: !this.state.auth});
+    }
+  }
   stateToggle(event) {
     this.setState({[event]: !this.state[event]});
   }
@@ -232,6 +265,9 @@ class Layout extends React.Component {
         {/* Pass methods & state vars to Toolbar Component through props */}
         <Navbar
           auth={this.state.auth}
+          yummy={this.state.yummy}
+          authToggle={this.authToggle.bind(this)}
+          getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
           gf={this.state.gf}
           noSpice={this.state.noSpice}
@@ -241,6 +277,12 @@ class Layout extends React.Component {
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
         />
+        <br />
+        {this.state.auth ? <Login
+
+          /> : null
+        }
+
         <br/>
         { this.state.showAdd ? <AddCard 
           dishNameInput={this.dishNameInput.bind(this)}

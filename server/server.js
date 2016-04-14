@@ -25,6 +25,9 @@ var fs = require('fs');
 //var formidable = require('formidable');
 var multer  = require('multer')
 var crypto = require("crypto")
+var Posts = require('./models/posts');
+var Users = require('./models/users');
+
 
 var storage = multer.diskStorage({
   destination: './client/pictures/',
@@ -38,8 +41,6 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({ storage: storage })
-var Posts = require('./models/posts');
-var Users = require('./models/users');
 
 var app = express();
 
@@ -97,15 +98,10 @@ app.get('/feed', function (req, res) {
 })
 
 app.get('/logout', function(req,res) {
+	console.log('hit it')
   req.session.destroy();
   res.redirect('/');
 })
-//get endpoint to serve up index.html
-// app.get('/dashboard', function (req, res) {
-// 	res.sendFile(assetFolder + '/index.html')
-// })
-
-// app.get('/pictures/')
 
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
@@ -159,55 +155,6 @@ app.get('/auth/facebook/callback',
 
     res.redirect('/');
   });
-
-
-//Signup And login routes will be changed/deleted once auth is set up
-// app.post('/signup', function(req, res) {
-// 	var user = req.body;
-	
-// 	Users.create(user)
-// 	.then(function(person){
-// 		res.status(201).send(person);
-// 	})
-// 	.catch(function (err) {
-// 	console.log('Error creating new user: ', err);
-// 	return res.status(404).send(err);
-// 	})
-// })
-
-
-// app.get('/login', function (req, res) {
-// 	var user = req.body.username;
-// 	var pass = req.body.password;
-
-// 	Users.verify(user, pass).then(function (person) {
-// 		if (person){
-// 			res.status(201).send(person);
-// 		}
-// 		else {
-// 			res.status(400);
-// 			res.end('not a user')
-// 		}
-// 	})
-// })
-
-/////// NOTE TO FUTURE GROUPS //////
-/////// THIS ALMOST KINDA WORKS ////
-
-// app.post('/upload', function (req, res) {
-// 	var file = req.body;
-//   console.log("req body:", req.files);
-
-//   var path = "./client/pictures/" + file.name;
-//   fs.writeFile(path, file, function(err) {
-//     if (err) {throw err;};
-//     console.log('No errors!');
-//     res.status(201).send(file);
-//   })  
-// })
-
-// route for passport
-//require('./models/app.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // Static assets (html, etc.)
 var assetFolder = Path.resolve(__dirname, '../client')
