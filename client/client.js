@@ -210,6 +210,8 @@ class Layout extends React.Component {
         
   }
 
+  
+
   render() {
 
     // console.log("client.js state:", this.state);
@@ -253,6 +255,7 @@ class Layout extends React.Component {
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}
+
           /> : null }
         <CardFeed
           boolVeg={this.state.veg}
