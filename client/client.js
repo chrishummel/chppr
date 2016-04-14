@@ -7,6 +7,11 @@ import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
 
+import Login from "./components/Login"
+
+import request from "superagent"
+import cookie from 'react-cookie';
+
 import fetch from "node-fetch";
 import $ from 'jquery';
 
@@ -16,6 +21,7 @@ class Layout extends React.Component {
   constructor() {
     super();
     this.state = {
+      yummy: cookie.load('yummy'),
       auth: false,
       veg: false,
       gf: false,
@@ -33,12 +39,42 @@ class Layout extends React.Component {
       gfClick: false,
       spicyClick: false,
       photo: null,
+      viewPhoto: null,
       dishCat: 999
     };
 
     this.getCardData();
   }
+  getFBToken(){
+    //console.log('calling something');
+    request.get('/auth/facebook')
+    .end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        console.log('client success', res);
+      }
+    });
+  }
+  authToggle(status){
+    if(status == 'logout'){
+      cookie.remove('yummy', { path: '/' });
+      request('GET', '/logout').end(function(err,res){
+        if (err) {
+          console.log('client error', err);
+        } else {
+          console.log(res);
+        }
+      });
+      
 
+
+      console.log('deleted')
+      this.setState({yummy:null});
+    } else {
+      this.setState({auth: !this.state.auth});
+    }
+  }
   stateToggle(event) {
     this.setState({[event]: !this.state[event]});
   }
@@ -46,9 +82,28 @@ class Layout extends React.Component {
   categorySelect(category) {
     this.setState({category});
   }
-  // photoInput(files) {
-  //   this.setState({photo: files});
-  // }
+  photoInput(files) {
+    this.setState({viewPhoto: files}); 
+
+    const req = request.post('/upload');
+    console.log("original files: ", files);
+    const data = new FormData();
+    var file = files[0];
+    data.append('file', file);
+    console.log("photoInput file: ", file);
+    req.send(data);
+    req.end((err, res) => {
+      if (err) {
+        console.log('client error', err);
+      } else {
+        let path = res.text.slice(0, 7);
+        console.log('client success', res.text);
+        this.setState({photo: 'pictures/' + res.text});
+
+      }
+    });
+  }
+
   dishNameInput(dishName) {
     this.setState({dishName: dishName});
   }
@@ -73,57 +128,45 @@ class Layout extends React.Component {
   spicyInput() {
     this.setState({spicyClick: !this.state.spicyClick});
   }
-  photoAdd(url) {
-    this.setState({photo: url})
-  }
+  // photoAdd(url) {
+  //   this.setState({photo: url})
+  // }
   catAdd(category) {
     this.setState({dishCat: category})
   }
   addCardSubmit() {
     var that = this;
     var newDish = {
-      // TODO - figure out categories and users
-      "user_id": 5,
-      "category": this.state.dishCat,
-      "timestamp": "01:30:00",
-      "dish_name": this.state.dishName,
-      "rest_name": this.state.restaurantName,
-      "price": Number(this.state.dishPrice),
-      "picture_path": this.state.photo,
-      "veggie": this.state.vegClick,
-      "gluten_free": this.state.gfClick,
-      "spicy": this.state.spicyClick,
-      "rating": this.state.dishRating
-    }
+
+          // TODO - figure out categories and users
+          "user_id": 5,
+          "category": this.state.dishCat,
+          "timestamp": "01:30:00",
+          "dish_name": this.state.dishName,
+          "rest_name": this.state.restaurantName,
+          "price": Number(this.state.dishPrice),
+          "picture_path": this.state.photo,
+          "veggie": this.state.vegClick,
+          "gluten_free": this.state.gfClick,
+          "spicy": this.state.spicyClick,
+          "rating": this.state.dishRating
+        }
     
-    var file = {
-      photo: that.state.photo[0]
-    }
 
-    // fetch('http://localhost:4000/upload', {
-    //   method: 'POST',
-    //   body: 'test'
-    // })
-    // .then(function() {
-    //   console.log("I think the file saved?");
-    // })
-    // .catch(function(err) {
-    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
-    // })
+    let data = JSON.stringify(newDish);
 
-  ////// VERY HACKY FIX //////
-    if (this.state.dishRating !== '') {
-
-      $.ajax({
-        type: "POST",
-        url: "/feed",
-        data: newDish,
-        // cache: false,
-        // processData: false,
-        // contentType: false
+    fetch('http://localhost:4000/feed', {  
+        method: 'post',  
+         headers: {  
+           //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: data //'foo=bar&lorem=ipsum'  
       })
-      .done(function() {
-        console.log("New dish posted");
+    .then(function (data) {  
+      console.log('Request succeeded with JSON response', data);  
+      console.log("New dish posted");
         that.state.cardData.unshift(newDish);
         that.setState({showAdd: false});
         that.setState({
@@ -137,12 +180,43 @@ class Layout extends React.Component {
           spicyClick: false,
           photo: null,
           dishCat: null
-        });
-      })
-      .fail(function() {
-        console.log("Failed to post new dish");
-      })
-    }
+        })
+    })  
+    .catch(function (error) {  
+      console.log('Request failed', error);  
+    });
+
+  ////// VERY HACKY FIX //////
+    // if (this.state.dishRating !== '') {
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "/feed",
+    //     data: newDish
+    //     // cache: false,
+    //     // processData: false,
+    //     // contentType: false
+    //   })
+    //   .done(function() {
+    //     console.log("New dish posted");
+    //     that.state.cardData.unshift(newDish);
+    //     that.setState({showAdd: false});
+    //     that.setState({
+    //       dishName: '',
+    //       restaurantName: '',
+    //       dishDescription: '',
+    //       dishPrice: '',
+    //       dishRating: '',
+    //       vegClick: false,
+    //       gfClick: false,
+    //       spicyClick: false,
+    //       photo: null,
+    //       dishCat: null
+    //     });
+    //   })
+    //   .fail(function() {
+    //     console.log("Failed to post new dish");
+    //   })
+    // }
 
   }
 
@@ -150,7 +224,13 @@ class Layout extends React.Component {
     // TODO - Replace this with a database call
     var that = this;
 
-    fetch('http://localhost:4000/feed')
+    fetch('http://localhost:4000/feed', {
+      method: 'GET',
+      headers: {  
+           //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+          'Accept': 'application/json',
+         }  
+    })
     .then(function(res) {
       return res.json();
     })
@@ -185,6 +265,9 @@ class Layout extends React.Component {
         {/* Pass methods & state vars to Toolbar Component through props */}
         <Navbar
           auth={this.state.auth}
+          yummy={this.state.yummy}
+          authToggle={this.authToggle.bind(this)}
+          getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
           gf={this.state.gf}
           noSpice={this.state.noSpice}
@@ -194,6 +277,12 @@ class Layout extends React.Component {
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
         />
+        <br />
+        {this.state.auth ? <Login
+
+          /> : null
+        }
+
         <br/>
         { this.state.showAdd ? <AddCard 
           dishNameInput={this.dishNameInput.bind(this)}
@@ -205,9 +294,9 @@ class Layout extends React.Component {
           gfInput={this.gfInput.bind(this)}
           spicyInput={this.spicyInput.bind(this)}
           addCardSubmit={this.addCardSubmit.bind(this)}
-          // photoInput={this.photoInput.bind(this)}
+          photoInput={this.photoInput.bind(this)}
           photo={this.state.photo ? this.state.photo[0].preview : null}
-          photoAdd={this.photoAdd.bind(this)}
+          viewPhoto={this.state.viewPhoto ? this.state.viewPhoto[0].preview : null}
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}
@@ -227,3 +316,6 @@ class Layout extends React.Component {
 const app = document.getElementById('app');
 
 ReactDOM.render(<Layout/>, app);
+
+
+//photoAdd={this.photoAdd.bind(this)}

@@ -27,9 +27,14 @@ module.exports = {
     path: __dirname + "/client/",
     filename: "client.min.js"
   },
+   resolve: {
+    // Can require('file') instead of require('file.js') etc.
+    extensions: ['', '.js', '.json']
+  },
+  
   plugins: debug ? [] : [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
-  ],
+  ]
 };

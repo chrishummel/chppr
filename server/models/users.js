@@ -15,7 +15,8 @@ Users.create = function (incomingAttrs) {
 	return db('users').insert({
     username: incomingAttrs.username,
     facebook_id: incomingAttrs.facebook_id,
-    facebook_token: incomingAttrs.facebook_token
+    facebook_token: incomingAttrs.facebook_token,
+    photo: incomingAttrs.photo
   })
   .then(function (result) {
     console.log('inserted user', result);
@@ -28,7 +29,7 @@ Users.findByFacebookID = function(id){
     facebook_id: id
   })
   .then(function(result){
-    console.log('found facebooker:', result);
+    //console.log('found facebooker:', result);
     return result[0];
   })
 
