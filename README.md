@@ -28,3 +28,7 @@ To stop your database:
 pg_ctl -D /usr/local/var/postgres stop -s -m fast
 
 To start the client server npm run dev (for local host:8080)
+
+to drop the database
+
+dropdb yumsnap

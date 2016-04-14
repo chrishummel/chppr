@@ -49,39 +49,6 @@ class Layout extends React.Component {
     this.setState({category});
   }
   photoInput(files) {
-    this.setState({photo: files});
-
-      // request('/upload')
-      //   .post('/client/pictures')
-      //   .set('Content-Type', 'image/png')
-      //   //.set('Content-Disposition', 'attachment; filename=')
-      //   .set('Content-Length', data.length)
-      //   .send(files[0])
-      //   })
-
-
-    // var file = files[0];
-    // console.log('my freakin file', file);
-    // request.post('/upload')
-    //   .set('Content-Type', 'image/png')
-    //   .set('Content-Length', file.length)
-    //   .attach('fieldname', file)
-    //   .end(function(err, file) {
-    //     if (err) {
-    //       console.error('error', err)
-    //     }
-    //   console.log("photoInput files", file);
-    // });
-
-        // files.forEach((file) => {
-        //   console.log('req filename:', file.name, file)
-        //   req.set('Content-Type', 'image/png');
-        //   req.set('Content-Length', file.length)
-        //   req.attach(file.name, file);
-        // });
-        // req.end(function(file) {
-        //   console.log("photoInput files", file);
-        // });
         
     const req = request.post('/upload');
     console.log("original files: ", files);
@@ -89,17 +56,15 @@ class Layout extends React.Component {
     var file = files[0];
     data.append('file', file);
     console.log("photoInput file: ", file);
-    // });
-    // files.forEach((file) => {
-    //   data.append('file', file);
-    //   console.log("photoInput file: ", data);
-    // });
     req.send(data);
     req.end((err, res) => {
       if (err) {
         console.log('client error', err);
       } else {
-        console.log('client success', res);
+        let path = res.text.slice(0, 7);
+        console.log('client success', res.text);
+        this.setState({photo: 'pictures/' + res.text});
+
       }
     });
   }
@@ -135,70 +100,77 @@ class Layout extends React.Component {
     this.setState({dishCat: category})
   }
   addCardSubmit() {
-    var that = this;
-    var newDish = {
-      // TODO - figure out categories and users
-      "user_id": 5,
-      "category": this.state.dishCat,
-      "timestamp": "01:30:00",
-      "dish_name": this.state.dishName,
-      "rest_name": this.state.restaurantName,
-      "price": Number(this.state.dishPrice),
-      "picture_path": this.state.photo,
-      "veggie": this.state.vegClick,
-      "gluten_free": this.state.gfClick,
-      "spicy": this.state.spicyClick,
-      "rating": this.state.dishRating
-    }
-    
-    // var file = {
-    //   photo: that.state.photo[0]
-    // };
-    //this.executeAction(newImageAction, newFile);
 
-    // fetch('/upload', {
-    //   method: 'POST',
-    //   body: file.photo
-    // })
-    // .then(function() {
-    //   console.log("I think the file saved?", file.photo);
-    // })
-    // .catch(function(err) {
-    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
-    // })
+    var newDish = {
+          // TODO - figure out categories and users
+          "user_id": 5,
+          "category": this.state.dishCat,
+          "timestamp": "01:30:00",
+          "dish_name": this.state.dishName,
+          "rest_name": this.state.restaurantName,
+          "price": Number(this.state.dishPrice),
+          "picture_path": this.state.photo,
+          "veggie": this.state.vegClick,
+          "gluten_free": this.state.gfClick,
+          "spicy": this.state.spicyClick,
+          "rating": this.state.dishRating
+        }
+        
+        console.log('new dish:', newDish)
+
+    // var data = new FormData();
+    // data.append( "json", JSON.stringify( newDish ) );
+    // console.log('new dish:', data)
+
+    let data = JSON.stringify(newDish);
+
+    fetch('http://localhost:4000/feed', {  
+        method: 'post',  
+         headers: {  
+           //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: data //'foo=bar&lorem=ipsum'  
+      })
+    .then(function (data) {  
+      console.log('Request succeeded with JSON response', data);  
+    })  
+    .catch(function (error) {  
+      console.log('Request failed', error);  
+    });
 
   ////// VERY HACKY FIX //////
-    if (this.state.dishRating !== '') {
-
-      $.ajax({
-        type: "POST",
-        url: "/feed",
-        data: newDish,
-        // cache: false,
-        // processData: false,
-        // contentType: false
-      })
-      .done(function() {
-        console.log("New dish posted");
-        that.state.cardData.unshift(newDish);
-        that.setState({showAdd: false});
-        that.setState({
-          dishName: '',
-          restaurantName: '',
-          dishDescription: '',
-          dishPrice: '',
-          dishRating: '',
-          vegClick: false,
-          gfClick: false,
-          spicyClick: false,
-          photo: null,
-          dishCat: null
-        });
-      })
-      .fail(function() {
-        console.log("Failed to post new dish");
-      })
-    }
+    // if (this.state.dishRating !== '') {
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "/feed",
+    //     data: newDish
+    //     // cache: false,
+    //     // processData: false,
+    //     // contentType: false
+    //   })
+    //   .done(function() {
+    //     console.log("New dish posted");
+    //     that.state.cardData.unshift(newDish);
+    //     that.setState({showAdd: false});
+    //     that.setState({
+    //       dishName: '',
+    //       restaurantName: '',
+    //       dishDescription: '',
+    //       dishPrice: '',
+    //       dishRating: '',
+    //       vegClick: false,
+    //       gfClick: false,
+    //       spicyClick: false,
+    //       photo: null,
+    //       dishCat: null
+    //     });
+    //   })
+    //   .fail(function() {
+    //     console.log("Failed to post new dish");
+    //   })
+    // }
 
   }
 
@@ -206,7 +178,13 @@ class Layout extends React.Component {
     // TODO - Replace this with a database call
     var that = this;
 
-    fetch('http://localhost:4000/feed')
+    fetch('http://localhost:4000/feed', {
+      method: 'GET',
+      headers: {  
+           //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+          'Accept': 'application/json',
+         }  
+    })
     .then(function(res) {
       return res.json();
     })

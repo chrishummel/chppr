@@ -16,21 +16,22 @@ var flash    = require('connect-flash'); // messages stored in session
 var fs = require('fs');
 //var formidable = require('formidable');
 var multer  = require('multer')
-var upload = multer({ dest: './client/pictures/' })
+var crypto = require("crypto")
+
+var storage = multer.diskStorage({
+  destination: './client/pictures/',
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return cb(err)
+
+      cb(null, raw.toString('hex') + Path.extname(file.originalname))
+    })
+  }
+})
+
+var upload = multer({ storage: storage })
 var Posts = require('./models/posts');
 var Users = require('./models/users');
-
-// var storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, __dirname + '../client/pictures');   
-//   },
-//   filename: function(req, file, cb) {
-//     //console.log('filename file.name:', file)
-//     cb(null, file);
-//   } 
-// })
-
-// var upload = multer({storage: storage});
 
 var app = express()
 
@@ -74,17 +75,30 @@ app.get('/feed', function (req, res) {
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
 	var card = req.body;
-	console.log("REQ BODY:", req.body);
+	console.log("REQ BODY:", req);
+  if (card === {}) {
+    return res.status(400).send("failed");
+  }
 	Posts.create(card)
 	.then(function(post){
 		res.status(201).send(post);
 	})
 	.catch(function (err) {
 				console.log('Error creating new post: ', err);
-				return res.status(404).send(err);
+				return res.status(400).send(err);
 			})
 })
 
+app.post('/upload', upload.any(), function (req, res) {
+  console.log('app.post is working', req)
+  console.log('reg.file', req.files[0].path)
+    if (!req.files[0]) {
+        return res.status(400).send('expect 1 file upload named file').end();
+    }
+    var filename = req.files[0].filename;
+    
+      res.status(201).send(filename);
+})
 
 // endpoint thats only used to update categories table
 app.post('/categories', function(req, res) {
@@ -156,49 +170,6 @@ app.get('/auth/facebook/callback',
 //   })  
 // })
 
-
-// app.post('/upload', function(req, res) {
-//     var incomingForm = req.form  // it is Formidable form object
-//     console.log('server upload: ', req.form);
-
-//     // Main entry for parsing the files
-//     // needed to start Formidables activity
-//     incomingForm.parse(req, function(err, fields, files){
-//       console.log('server upload fields & files: ', fields, files);
-
-//     })
-// })
-
-//
-
-app.post('/upload', upload.any(), function (req, res) {
-  console.log('app.post is working', req)
-  console.log('reg.file', req.files[0].path)
-    if (!req.file) {
-        return res.status(400).send('expect 1 file upload named file').end();
-    }
-    var file = req.file;
-    console.log('server image:', file);
-    
-      res.send("It's a success!");
-  })
-  
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
- 
-
-// app.post('/upload', function(req, res){
-//     // parse a file upload 
-//     var form = new formidable.IncomingForm();
-
-//     console.log('server form: ', form);
- 
-//     // form.parse(req, function(err, fields, files) {
-//     //   res.writeHead(200, {'content-type': 'text/plain'});
-//     //   res.write('received upload:\n\n');
-//     //   res.end(util.inspect({fields: fields, files: files}));
-//     // });
-//  });
 
 
 // required for passport
