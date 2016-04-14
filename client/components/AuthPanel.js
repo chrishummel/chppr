@@ -5,6 +5,7 @@ import Popover from 'material-ui/lib/popover/popover';
 export default class AuthPanel extends React.Component {
   handleAuth() {
     if(this.props.yummy){
+      console.log("logout pressed");
       this.props.authToggle('logout');
     } else {
       console.log("login pressed");

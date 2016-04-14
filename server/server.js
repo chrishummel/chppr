@@ -97,6 +97,7 @@ app.get('/feed', function (req, res) {
 })
 
 app.get('/logout', function(req,res) {
+	console.log('hit it')
   req.session.destroy();
   res.redirect('/');
 })

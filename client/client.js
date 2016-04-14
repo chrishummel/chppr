@@ -58,20 +58,18 @@ class Layout extends React.Component {
   authToggle(status){
     if(status == 'logout'){
       cookie.remove('yummy', { path: '/' });
-
-      request.get('/logout');
-      request.end((err, res) => {
+      request('GET', '/logout').end(function(err,res){
         if (err) {
           console.log('client error', err);
         } else {
           console.log(res);
         }
-      }
+      });
+      
 
 
       console.log('deleted')
-      this.state.yummy = {};
-
+      this.setState({yummy:null});
     } else {
       this.setState({auth: !this.state.auth});
     }
