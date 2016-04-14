@@ -8,3 +8,4 @@ dist/
 
 # authentication keys
 server/config/auth.js
+client/pictures/*
