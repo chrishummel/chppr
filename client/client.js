@@ -84,13 +84,16 @@ class Layout extends React.Component {
         // });
         
     const req = request.post('/upload');
-    
+    console.log("original files: ", files);
     const data = new FormData();
-    files.forEach((file) => {
-      data.append('file', file);
-      console.log("photoInput file: ", data);
-    });
-    console.log('client data:', data)
+    var file = files[0];
+    data.append('file', file);
+    console.log("photoInput file: ", file);
+    // });
+    // files.forEach((file) => {
+    //   data.append('file', file);
+    //   console.log("photoInput file: ", data);
+    // });
     req.send(data);
     req.end((err, res) => {
       if (err) {
@@ -148,9 +151,9 @@ class Layout extends React.Component {
       "rating": this.state.dishRating
     }
     
-    var file = {
-      photo: that.state.photo[0]
-    };
+    // var file = {
+    //   photo: that.state.photo[0]
+    // };
     //this.executeAction(newImageAction, newFile);
 
     // fetch('/upload', {
@@ -165,37 +168,37 @@ class Layout extends React.Component {
     // })
 
   ////// VERY HACKY FIX //////
-    // if (this.state.dishRating !== '') {
+    if (this.state.dishRating !== '') {
 
-    //   $.ajax({
-    //     type: "POST",
-    //     url: "/feed",
-    //     data: newDish,
-    //     // cache: false,
-    //     // processData: false,
-    //     // contentType: false
-    //   })
-    //   .done(function() {
-    //     console.log("New dish posted");
-    //     that.state.cardData.unshift(newDish);
-    //     that.setState({showAdd: false});
-    //     that.setState({
-    //       dishName: '',
-    //       restaurantName: '',
-    //       dishDescription: '',
-    //       dishPrice: '',
-    //       dishRating: '',
-    //       vegClick: false,
-    //       gfClick: false,
-    //       spicyClick: false,
-    //       photo: null,
-    //       dishCat: null
-    //     });
-    //   })
-    //   .fail(function() {
-    //     console.log("Failed to post new dish");
-    //   })
-    // }
+      $.ajax({
+        type: "POST",
+        url: "/feed",
+        data: newDish,
+        // cache: false,
+        // processData: false,
+        // contentType: false
+      })
+      .done(function() {
+        console.log("New dish posted");
+        that.state.cardData.unshift(newDish);
+        that.setState({showAdd: false});
+        that.setState({
+          dishName: '',
+          restaurantName: '',
+          dishDescription: '',
+          dishPrice: '',
+          dishRating: '',
+          vegClick: false,
+          gfClick: false,
+          spicyClick: false,
+          photo: null,
+          dishCat: null
+        });
+      })
+      .fail(function() {
+        console.log("Failed to post new dish");
+      })
+    }
 
   }
 

@@ -14,23 +14,23 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var flash    = require('connect-flash'); // messages stored in session
 var fs = require('fs');
-var formidable = require('formidable');
+//var formidable = require('formidable');
 var multer  = require('multer')
-//var upload = multer({ dest: './client/pictures/' })
+var upload = multer({ dest: './client/pictures/' })
 var Posts = require('./models/posts');
 var Users = require('./models/users');
 
-var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, __dirname + '../client/pictures');   
-  },
-  filename: function(req, file, cb) {
-    console.log('filename file.name:', file.name)
-    cb(null, file.name);
-  } 
-})
+// var storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, __dirname + '../client/pictures');   
+//   },
+//   filename: function(req, file, cb) {
+//     //console.log('filename file.name:', file)
+//     cb(null, file);
+//   } 
+// })
 
-var upload = multer({storage: storage});
+// var upload = multer({storage: storage});
 
 var app = express()
 
@@ -172,10 +172,15 @@ app.get('/auth/facebook/callback',
 //
 
 app.post('/upload', upload.any(), function (req, res) {
-    console.log('req.file:', req.file);
-    console.log('req.body:', req.body);
+  console.log('app.post is working', req)
+  console.log('reg.file', req.files[0].path)
+    if (!req.file) {
+        return res.status(400).send('expect 1 file upload named file').end();
+    }
+    var file = req.file;
+    console.log('server image:', file);
     
-      res.send(req.file);
+      res.send("It's a success!");
   })
   
   // req.file is the `avatar` file
