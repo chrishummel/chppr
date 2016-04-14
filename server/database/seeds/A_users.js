@@ -5,11 +5,12 @@ exports.seed = function(knex, Promise) {
     knex('users').del(), 
 
     // Inserts seed entries
-    knex('users').insert({ username: 'Rich', password: 'rich'}),
-    knex('users').insert({ username: 'Pat L', password: 'PatL'}),
-    knex('users').insert({ username: 'Hugh', password: 'Hugh'}),
-    knex('users').insert({ username: 'Christina', password: 'Tina'}),
-    knex('users').insert({ username: 'PatD', password: 'PatD'}),
-    knex('users').insert({ username: 'Will', password: 'ferrel'})
+    knex('users').insert({ username: 'Chris1', facebook_id: 'numbersAndThings'}),
+    knex('users').insert({ username: 'Chris2', facebook_id: 'numbersAndThings'}),
+    knex('users').insert({ username: 'Chris3', facebook_id: 'numbersAndThings'}),
+    knex('users').insert({ username: 'Chris4', facebook_id: 'numbersAndThings'}),
+    knex('users').insert({ username: 'Chris5', facebook_id: 'numbersAndThings'}),
+    knex('users').insert({ username: 'Chris6', facebook_id: 'numbersAndThings'})
+    
   );
 };

@@ -30,7 +30,6 @@ Users.findByFacebookID = function(id){
   })
   .then(function(result){
     console.log('found facebooker:', result);
-    if (result[0] && result[0].facebook_token) { delete result[0].facebook_token }
     return result[0];
   })
 

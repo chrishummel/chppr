@@ -9,7 +9,14 @@ var compiler = webpack(config)
 var Path = require('path')
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var KnexSessionStore = require('connect-session-knex')(session);
+var knexPg = require('knex')({
+  client: 'postgresql',
+  connection: {
+    database: 'yumsnap'
+  }
+});
 
 var passport = require('passport')
 var configPassport = require('./config/passport')(passport)
@@ -18,8 +25,12 @@ var flash    = require('connect-flash'); // messages stored in session
 var Posts = require('./models/posts');
 var Users = require('./models/users');
 
-var app = express()
+var app = express();
 
+var store = new KnexSessionStore({
+  knex: knexPg,
+  tablename: 'sessions'
+});
 
 app.use(webpackDevMiddleware(compiler, {  
     publicPath: config.output.publicPath,  
@@ -27,7 +38,15 @@ app.use(webpackDevMiddleware(compiler, {
 }))
 
 // required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(session({ 
+  secret: 'ilovescotchscotchyscotchscotch',
+  store: store,
+  cookie: {
+    maxAge: 30 * 60 * 1000
+  }  
+
+})); // session secret
+
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
