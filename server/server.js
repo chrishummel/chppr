@@ -80,6 +80,10 @@ app.get('/feed', function (req, res) {
 	})
 })
 
+app.get('/logout', function(req,res) {
+  req.session.destroy();
+  res.redirect('/');
+})
 //get endpoint to serve up index.html
 // app.get('/dashboard', function (req, res) {
 // 	res.sendFile(assetFolder + '/index.html')
