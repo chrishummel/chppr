@@ -6,7 +6,9 @@ console.log('at start of migration')
 		knex.schema.createTable('users', function(table){
 			table.increments('uid').primary();
 			table.string('username').unique();
-			table.string('password')
+			table.string('facebook_id');
+			table.string('facebook_token');
+			table.string('photo')
 		}),
 		
 		//categories table
@@ -17,6 +19,7 @@ console.log('at start of migration')
 		
 		//favorites table
 		knex.schema.createTable('favorites', function(table){
+			table.increments('id').primary();
 			//foreign key to posts table
 			table.integer('postID')
 					 .references('postID')

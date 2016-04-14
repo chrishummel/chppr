@@ -8,10 +8,10 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 
 export default class AddCard extends React.Component {
 
-  // onDrop (files) {
-  //   console.log('Received file(s): ', files);
-  //   this.props.photoInput(files);
-  // }
+  onDrop (files) {
+    console.log('Received file(s): ', files);
+    this.props.photoInput(files);
+  }
   handleDishName(e) {
     this.props.dishNameInput(e.target.value);
   }
@@ -39,9 +39,9 @@ export default class AddCard extends React.Component {
   handleSubmit() {
     this.props.addCardSubmit();
   }
-  handlePhoto(e) {
-    this.props.photoAdd(e.target.value);
-  }
+  // handlePhoto(e) {
+  //   this.props.photoAdd(e.target.value);
+  // }
   handleCatSelect(event, index, value) {
     console.log(value)
     this.props.catAdd(value);
@@ -79,10 +79,14 @@ export default class AddCard extends React.Component {
       <div style={styles.block}>
 
         <div style={styles.boxes}>
-          <TextField
-            onChange={this.handlePhoto.bind(this)}
-            floatingLabelText="Enter URL for your photo"
-          /><br/>
+          <div style={styles.dropzone}>
+            <h3>drop zone space</h3>
+            <Dropzone multiple={false} accept={'image/*'} onDrop={this.onDrop.bind(this)}>
+              <div style={styles.text}>Drag your photo here, or click to select a file to upload.</div>
+            </Dropzone>
+            {this.props.viewPhoto ? <div><br/>Image Preview: <br/><img width='250' src={this.props.viewPhoto} /></div> : null} 
+          </div>
+          <br/>
           <TextField
             onChange={this.handleDishName.bind(this)}
             floatingLabelText="Enter Name of Dish"
@@ -99,6 +103,7 @@ export default class AddCard extends React.Component {
             onChange={this.handleDishRating.bind(this)}
             floatingLabelText="Enter Your Rating of Dish"
           /><br/>
+          <label>Choose a cuisine category</label>
           <DropDownMenu style={styles.dropdown} value={this.props.dishCat} onChange={this.handleCatSelect.bind(this)}>
             <MenuItem value={999} primaryText="Category"/>
             <MenuItem value={1} primaryText="Mexican"/>
@@ -135,10 +140,11 @@ export default class AddCard extends React.Component {
             floatingLabelText="Enter Description of Dish"
           /><br/>*/
 
-        // <div style={styles.dropzone}>
-        //   <Dropzone multiple={false} accept={'image/*'} onDrop={this.onDrop.bind(this)}>
-        //     <div style={styles.text}>Drag your photo here, or click to select a file to upload.</div>
-        //   </Dropzone>
+          /*
+          <TextField
+            onChange={this.handlePhoto.bind(this)}
+            floatingLabelText="Enter URL for your photo"
+          />
+          <br/>*/
 
-        //   {this.props.photo ? <div><br/>Image Preview: <br/><img width='250' src={this.props.photo} /></div> : null}        
-        // </div>
+        

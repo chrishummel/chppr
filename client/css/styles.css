@@ -1,0 +1,13 @@
+.user{
+  margin-top: 7px;
+}
+.user img{
+  margin-right: 7px;
+  height: 35px;
+  width: 35px;
+  float: left;
+  border-radius: 50%;
+}
+.user p{
+  float: right;
+}

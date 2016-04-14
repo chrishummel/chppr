@@ -5,7 +5,10 @@ bower_components/
 
 build/
 dist/
+db/*
 
 # authentication keys
 server/config/auth.js
+
 client/pictures/*
+
