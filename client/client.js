@@ -117,24 +117,6 @@ class Layout extends React.Component {
           "rating": this.state.dishRating
         }
     
-    var file = {
-      photo: that.state.photo[0]
-    }
-
-    // fetch('http://localhost:4000/upload', {
-    //   method: 'POST',
-    //   body: 'test'
-    // })
-    // .then(function() {
-    //   console.log("I think the file saved?");
-    // })
-    // .catch(function(err) {
-    //   console.log("Yo, I'm pretty sure something didn't work...:", err);
-    // })
-
-    // var data = new FormData();
-    // data.append( "json", JSON.stringify( newDish ) );
-    // console.log('new dish:', data)
 
     let data = JSON.stringify(newDish);
 
