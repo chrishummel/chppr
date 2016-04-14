@@ -170,7 +170,7 @@ class Layout extends React.Component {
     var that = this;
     var newDish = {
       // TODO - figure out categories and users
-      "user_id": 5,
+      "user_id": 1,
       "category": this.state.dishCat,
       "timestamp": "01:30:00",
       "dish_name": this.state.dishName,
