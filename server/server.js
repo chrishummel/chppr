@@ -27,6 +27,7 @@ var multer  = require('multer')
 var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
+var favorites = require('./models/favorites');
 
 
 var storage = multer.diskStorage({
@@ -82,7 +83,7 @@ app.get('/', function(req, res) {
     res.cookie('yummy', JSON.stringify(req.user))
   }
   res.sendFile(assetFolder + '/index.html')
-})
+});
 
 
 //get endpoint for json obj for posts 
@@ -95,30 +96,24 @@ app.get('/feed', function (req, res) {
 				console.log('Error getting posts: ', err);
 				return res.status(404).send(err);
 	})
-})
-
-app.get('/logout', function(req,res) {
-	console.log('hit it')
-  req.session.destroy();
-  res.redirect('/');
-})
+});
 
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
-	var card = req.body;
-	console.log("REQ BODY:", req);
+  var card = req.body;
+  console.log("REQ BODY:", req);
   if (card === {}) {
     return res.status(400).send("failed");
   }
-	Posts.create(card)
-	.then(function(post){
-		res.status(201).send(post);
-	})
-	.catch(function (err) {
-				console.log('Error creating new post: ', err);
-				return res.status(400).send(err);
-			})
-})
+  Posts.create(card)
+  .then(function(post){
+    res.status(201).send(post);
+  })
+  .catch(function (err) {
+        console.log('Error creating new post: ', err);
+        return res.status(400).send(err);
+      })
+});
 
 app.post('/upload', upload.any(), function (req, res) {
   console.log('app.post is working', req)
@@ -129,7 +124,7 @@ app.post('/upload', upload.any(), function (req, res) {
     var filename = req.files[0].filename;
     
       res.status(201).send(filename);
-})
+});
 
 // endpoint thats only used to update categories table
 app.post('/categories', function(req, res) {
@@ -143,8 +138,46 @@ app.post('/categories', function(req, res) {
 				console.log('Error creating new post: ', err);
 				return res.status(404).send(err);
 			})
-})
+});
 
+//app.post('/addFav', services.addFav);
+app.post('/myfavs', function(req, res) {
+  var fav = req.body;
+  Favorites.add(fav.userID, fav.postID)
+  .then(function(res) {
+    res.status(201).send(res);
+  })
+  .catch(function(err) {
+    res.status(400).send(err);
+  })
+});
+
+app.get('/myfavs', function(req, res) {
+  return Favorites.getFavByUserID(req.body.userId)
+    .then(function(resp) {
+      console.log('get MyFav resp: ', resp);
+      return Promise.all(resp.map(function(dbObj) {
+        var post = {};
+        post.query = {};
+        post.query.unique_id = dbObj.postID;
+        return Post.single(post);
+      }))
+    })
+    .then(function(resp) {
+      var flattenResp = resp.reduce(function(a, b) { return a.concat(b) });
+      res.json(flattenResp);
+    })
+    .catch(function(err) {
+      console.log('server userFav err:', err);
+    })
+
+});
+
+app.get('/logout', function(req,res) {
+  console.log('hit it')
+  req.session.destroy();
+  res.redirect('/');
+})
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 

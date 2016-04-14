@@ -58,8 +58,7 @@ export default class Navbar extends React.Component {
         paddingLeft: 10,
       },
       button: {
-        margin: 12,
-        
+        margin: 12
       }
     };
 

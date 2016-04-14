@@ -152,7 +152,6 @@ class Layout extends React.Component {
           "rating": this.state.dishRating
         }
     
-
     let data = JSON.stringify(newDish);
 
     fetch('http://localhost:4000/feed', {  
@@ -185,39 +184,6 @@ class Layout extends React.Component {
     .catch(function (error) {  
       console.log('Request failed', error);  
     });
-
-  ////// VERY HACKY FIX //////
-    // if (this.state.dishRating !== '') {
-    //   $.ajax({
-    //     type: "POST",
-    //     url: "/feed",
-    //     data: newDish
-    //     // cache: false,
-    //     // processData: false,
-    //     // contentType: false
-    //   })
-    //   .done(function() {
-    //     console.log("New dish posted");
-    //     that.state.cardData.unshift(newDish);
-    //     that.setState({showAdd: false});
-    //     that.setState({
-    //       dishName: '',
-    //       restaurantName: '',
-    //       dishDescription: '',
-    //       dishPrice: '',
-    //       dishRating: '',
-    //       vegClick: false,
-    //       gfClick: false,
-    //       spicyClick: false,
-    //       photo: null,
-    //       dishCat: null
-    //     });
-    //   })
-    //   .fail(function() {
-    //     console.log("Failed to post new dish");
-    //   })
-    // }
-
   }
 
   getCardData(){
@@ -241,20 +207,7 @@ class Layout extends React.Component {
     .catch(function(err) {
       console.log('something went wrong getting data', err);
     });
-        /*
-    $.ajax({
-      url: '/feed',
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        console.log('got this data from /feed', data);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log('getCardData failed, status: ', status, 'error: ', err);
-      }.bind(this)
-    
-    });
-    */
+        
   }
 
   

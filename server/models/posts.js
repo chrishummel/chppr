@@ -21,3 +21,13 @@ Post.loader = function () {
       return result;
     });
 };
+
+Post.single = function (trailID) {
+  return db.select('*').from('posts').where({postID: postID})
+    .then(function(resp) {
+      console.log('post.single resp: ', resp);
+    })
+    .catch(function(err) {
+      console.error('post.single err:', err);
+    })
+}
