@@ -33,6 +33,7 @@ export default class Navbar extends React.Component {
   }
 
   render () {
+    console.log('navbar props',this.props)
     const styles = {
       title: {
         color: "red",
@@ -58,13 +59,15 @@ export default class Navbar extends React.Component {
       },
       button: {
         margin: 12,
-        position: 'fixed', left: 0, right: 0
+        
       }
     };
 
     return (
       <Toolbar style={styles.toolbar}>
         <ToolbarTitle style={styles.title} text="YumSnap!" />
+        <RaisedButton primary={true} onClick={this.handleShowAdd.bind(this)} label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} default={true} style={styles.button} />  
+        
         <ToolbarGroup firstChild={true} float="left">
           <DropDownMenu style={styles.dropdown} value={this.props.category} onChange={this.handleCategory.bind(this)}>
               <MenuItem value={null} primaryText="All"/>
@@ -94,7 +97,12 @@ export default class Navbar extends React.Component {
           />
         </ToolbarGroup>
         <ToolbarGroup float="right">
-          <RaisedButton onClick={this.handleShowAdd.bind(this)} label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} default={true} style={styles.button} />  
+          <AuthPanel 
+            authToggle={this.props.authToggle.bind(this)}
+            auth={this.props.auth}
+            yummy={this.props.yummy}
+            getFBToken={this.props.getFBToken.bind(this)}
+          />
         </ToolbarGroup>
       </Toolbar>
     )

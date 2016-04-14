@@ -36,7 +36,7 @@ passport.use(new FacebookStrategy({
 
   // facebook will send back the token and profile
   function(token, refreshToken, profile, done) {
-      console.log('facebook profile: ',profile)
+      //console.log('facebook profile: ',profile)
      // process.nextTick(function() {
           User.findByFacebookID(profile.id)
             .then(function(user) {
