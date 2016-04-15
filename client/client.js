@@ -6,6 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
+import MyFavsFeed from "./components/MyFavsFeed"
 
 import Login from "./components/Login"
 
@@ -32,7 +33,6 @@ class Layout extends React.Component {
       cardData: [],
       categoryData: [],
       showAdd: false,
-      showFavs: false,
       dishName: '',
       restaurantName: '',
       dishDescription: '',
@@ -43,7 +43,9 @@ class Layout extends React.Component {
       spicyClick: false,
       photo: null,
       viewPhoto: null,
-      dishCat: 999
+      dishCat: 999,
+      showMyFavs: false,
+      myFavs: []
     };
 
     this.getCardData();
@@ -301,6 +303,35 @@ class Layout extends React.Component {
      });
    }
 
+   getUserFavs() {
+    var that = this;
+    var user = {
+      userID: that.state.yummy.uid
+    }
+
+    let data = JSON.stringify(user)
+
+    fetch('http://localhost:4000/allmyfavs', {  
+        method: 'post',  
+         headers: {  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: data   
+    })
+    .then(function(res){
+      return res.json()
+    })
+    .then(function(json){
+      console.log('my favs:',that.state.showMyFavs)
+      that.setState({myFavs: json})
+    })
+    .catch(function(err) {
+       console.log('something went wrong getting userFavs', err);
+     });
+
+   }
+
   render() {
 
     // console.log("client.js state:", this.state);
@@ -316,10 +347,11 @@ class Layout extends React.Component {
           gf={this.state.gf}
           noSpice={this.state.noSpice}
           showAdd={this.state.showAdd}
-          showFavs={this.state.showFavs}
+          showMyFavs={this.state.showMyFavs}
           category={this.state.category}
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
+          getUserFavs={this.getUserFavs.bind(this)}
         />
         <br />
         
@@ -342,7 +374,7 @@ class Layout extends React.Component {
           dishCat={this.state.dishCat}
 
           /> : null }
-        <CardFeed
+        { !this.state.showMyFavs ? <CardFeed
           boolVeg={this.state.veg}
           boolGF={this.state.gf}
           boolNoSpice={this.state.noSpice}
@@ -354,8 +386,19 @@ class Layout extends React.Component {
           categoryData={this.state.categoryData}
           yelpBasics={this.state.yelpBasics}
           yelpAddress={this.state.yelpAddress}
+        /> : null }
 
-        />
+        { this.state.showMyFavs ? <MyFavsFeed
+          boolVeg={this.state.veg}
+          boolGF={this.state.gf}
+          boolNoSpice={this.state.noSpice}
+          myFavs={this.state.myFavs}
+          category={this.state.category}
+          userData={this.state.userData}
+          addToFavorites={this.addToFavorites.bind(this)}
+          categoryData={this.state.categoryData}
+        /> : null }
+
       </div>
     );
   }

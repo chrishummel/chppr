@@ -261,20 +261,18 @@ app.post('/myfavs', function(req, res) {
   })
 });
 
-app.get('/myfavs', function(req, res) {
-    return Favorites.getFavByUserID(2)
+app.post('/allmyfavs', function(req, res) {
+    console.log(req.body.userID)
+    return Favorites.getFavByUserID(req.body.userID)
     .then(function(resp) {
       console.log('get MyFav resp: ', resp);
       return Promise.all(resp.map(function(dbObj) {
-        var post = {};
-        // post.query = {};
-        // post.query.unique_id = dbObj.postID;
         var postID = dbObj.postID;
         return Posts.single(postID);
       }))
     })
     .then(function(resp) {
-      //console.log("post single: ", resp);
+      console.log("allmyfavs: ", resp);
       var flattenResp = resp.reduce(function(a, b) { return a.concat(b) });
       res.json(flattenResp);
     })
@@ -300,6 +298,7 @@ app.get('/auth/facebook/callback',
 
     res.redirect('/');
   });
+
 
 
 app.get('/users', function (req, res) {

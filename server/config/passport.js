@@ -16,10 +16,11 @@ module.exports = function(passport) {
     done(null, user.facebook_id);
   });
 
+
   passport.deserializeUser(function(id, done) {
     User.findByFacebookID(id)
       .then(function(user){
-        done(null, user);
+        done(null, user); //ends up as req.user
       })
     
   });

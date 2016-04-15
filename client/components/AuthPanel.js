@@ -25,7 +25,7 @@ export default class AuthPanel extends React.Component {
 
 
   render() {
-    console.log("AuthPanel props:", this.props);
+    //console.log("AuthPanel props:", this.props);
     const styles = {
       button: {
         margin: 12,
