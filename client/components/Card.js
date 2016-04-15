@@ -95,7 +95,6 @@ export default class DishCard extends React.Component {
             </span>
           </div>
           <div>
-<<<<<<< HEAD
           <CardActions>
             <FlatButton 
               label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
@@ -105,15 +104,7 @@ export default class DishCard extends React.Component {
 
           </div>
 
-=======
-            <CardActions>
-              <FlatButton 
-                label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
-                onClick={this.handleFavClick.bind(this)} 
-              />
-            </CardActions>
-          </div>
->>>>>>> development
+
         </Card>
       </div>
     );
