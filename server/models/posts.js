@@ -11,6 +11,9 @@ Post.create = function (incomingAttrs) {
     .then(function (result) {
       // Prepare new user for outside world
       return result[0];
+    })
+    .catch(function(err){
+      console.log('here is the problem:', err);
     });
 };
 
@@ -21,3 +24,13 @@ Post.loader = function () {
       return result;
     });
 };
+
+Post.single = function (postID) {
+  return db.select('*').from('posts').where({postID: postID})
+    .then(function(resp) {
+      return resp;
+    })
+    .catch(function(err) {
+      console.error('post.single err:', err);
+    })
+}

@@ -27,6 +27,14 @@ var multer  = require('multer')
 var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
+var Favorites = require('./models/favorites');
+//for yelp api
+var oauthSignature = require('oauth-signature');  
+var n = require('nonce')();  
+var request = require('request');  
+var qs = require('querystring');  
+var _ = require('lodash');
+var axios = require('axios');
 
 
 var storage = multer.diskStorage({
@@ -73,6 +81,63 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+ /* Function for yelp call
+ * ------------------------
+ * set_parameters: object with params to search
+ */
+
+
+ var request_yelp = function(set_parameters, type) {
+  console.log('yelp function working')
+  /* The type of request */
+  var httpMethod = 'GET';
+  /* We set the require parameters here */
+  var required_parameters = {
+    oauth_consumer_key : '2kWm_qTCzUEfSVYUjU2fIw', //process.env.oauth_consumer_key
+    oauth_token : 'GpE0chVSnbgJ0edMj1DAor8mJuv3sGyL', //process.env.oauth_token
+    oauth_nonce : n(),
+    oauth_timestamp : n().toString().substr(0,10),
+    oauth_signature_method : 'HMAC-SHA1',
+    oauth_version : '1.0'
+  };
+
+  /* The url we are using for the request */
+  if (type === "addCard") {
+    var url = 'http://api.yelp.com/v2/search';
+    var parameters = _.assign(set_parameters, required_parameters);
+
+    //var url = "http://api.yelp.com/v2/business/p-terrys-burger-stand-austin-8"
+  } else {
+    var url = "http://api.yelp.com/v2/business/" + set_parameters;
+    console.log('set_parameters:', set_parameters)
+     /* We combine all the parameters in order of importance */ 
+    var parameters = _.assign(required_parameters);
+
+  }
+
+  /* We set our secrets here */
+  var consumerSecret = 'qaR9eRgkjIfoz3RKvubcVhUnbCk'; //process.env.consumerSecret
+  var tokenSecret = 'kF-EkG1-b2mE9olO9LEdFk0ER6c'; //process.env.tokenSecret
+
+  /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
+  /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
+  var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
+  console.log('signature:', signature)
+  /* We add the signature to the list of paramters */
+  parameters.oauth_signature = signature;
+
+  /* Then we turn the paramters object, to a query string */
+  var paramURL = qs.stringify(parameters);
+  console.log('paramURL:', paramURL)
+
+  /* Add the query string to the url */
+  var apiURL = url+'?'+paramURL;
+  
+  return apiURL;  
+};
+
+
 // ---------- Routes Start Here ------------- //
 
 //Login route, default route
@@ -82,7 +147,7 @@ app.get('/', function(req, res) {
     res.cookie('yummy', JSON.stringify(req.user))
   }
   res.sendFile(assetFolder + '/index.html')
-})
+});
 
 
 //get endpoint for json obj for posts 
@@ -95,30 +160,47 @@ app.get('/feed', function (req, res) {
 				console.log('Error getting posts: ', err);
 				return res.status(404).send(err);
 	})
-})
-
-app.get('/logout', function(req,res) {
-	console.log('hit it')
-  req.session.destroy();
-  res.redirect('/');
-})
+});
 
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
-	var card = req.body;
-	console.log("REQ BODY:", req);
-  if (card === {}) {
-    return res.status(400).send("failed");
-  }
-	Posts.create(card)
-	.then(function(post){
-		res.status(201).send(post);
-	})
-	.catch(function (err) {
-				console.log('Error creating new post: ', err);
-				return res.status(400).send(err);
-			})
-})
+  var card = req.body;
+  console.log("REQ BODY City:", req.body.rest_city);
+
+  //Compiling Yelp API's API URL based on user input
+  var restCity = card.rest_city;
+  var restName = card.rest_name;
+
+  var apiURL = request_yelp(
+    {
+        term: restName,
+        location: restCity
+    }
+  , 'addCard');
+  console.log("API URL:", apiURL)
+  //making API call to yelp using the compiled API URL
+  axios({
+    method: "GET",
+    url: apiURL
+  })
+  .then(function(response) {
+    console.log('response:', response.data.businesses[0].id);
+    card.yelp_id = response.data.businesses[0].id;
+
+    Posts.create(card)
+    .then(function(post){
+      res.status(201).send(post);
+    })
+    .catch(function (err) {
+          console.log('Error creating new post: ', err);
+          return res.status(400).send(err);
+    })
+    
+  })
+  .catch(function(err) {
+    console.log("Yelp Server Error:", err)
+  })
+});
 
 app.post('/upload', upload.any(), function (req, res) {
   console.log('app.post is working', req)
@@ -129,6 +211,25 @@ app.post('/upload', upload.any(), function (req, res) {
     var filename = req.files[0].filename;
     
       res.status(201).send(filename);
+});
+
+app.get('/yelp', function(req, res) {
+  var id = req.query.yelpId;
+  console.log('req.query.yelpID:', id);
+  //making API call to yelp using the compiled API URL
+  var apiURL = request_yelp(id, 'getCard');
+  console.log("API URL:", apiURL)
+  axios({
+    method: "GET",
+    url: apiURL
+  })
+  .then(function(response) {
+    res.json(response);  
+  })
+  .catch(function(err) {
+    console.log("Yelp Server Error:", err)
+  })
+
 })
 
 // endpoint thats only used to update categories table
@@ -143,8 +244,49 @@ app.post('/categories', function(req, res) {
 				console.log('Error creating new post: ', err);
 				return res.status(404).send(err);
 			})
-})
+});
 
+//app.post('/addFav', services.addFav);
+app.post('/myfavs', function(req, res) {
+  var fav = req.body;
+  return Favorites.add(fav.userID, fav.postID)
+  .then(function(resp) {
+    res.status(201).send(resp);
+  })
+  .catch(function(err) {
+    res.status(400).send(err);
+  })
+});
+
+app.get('/myfavs', function(req, res) {
+    return Favorites.getFavByUserID(2)
+    .then(function(resp) {
+      console.log('get MyFav resp: ', resp);
+      return Promise.all(resp.map(function(dbObj) {
+        var post = {};
+        // post.query = {};
+        // post.query.unique_id = dbObj.postID;
+        var postID = dbObj.postID;
+        return Posts.single(postID);
+      }))
+    })
+    .then(function(resp) {
+      //console.log("post single: ", resp);
+      var flattenResp = resp.reduce(function(a, b) { return a.concat(b) });
+      res.json(flattenResp);
+    })
+    .catch(function(err) {
+      console.log('server userFav err:', err);
+      res.status(400).send(err);
+    })
+
+});
+
+app.get('/logout', function(req,res) {
+  console.log('hit it')
+  req.session.destroy();
+  res.redirect('/');
+})
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
@@ -155,6 +297,7 @@ app.get('/auth/facebook/callback',
 
     res.redirect('/');
   });
+
 
 app.get('/users', function (req, res) {
 	Users.getUsers()
@@ -178,6 +321,7 @@ app.get('/categories', function (req, res) {
 				return res.status(404).send(err);
 	})
 })
+
 // Static assets (html, etc.)
 var assetFolder = Path.resolve(__dirname, '../client')
 app.use(express.static(assetFolder))

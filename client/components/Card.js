@@ -6,12 +6,20 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import RaisedButton from 'material-ui/lib/raised-button';
 import CardText from 'material-ui/lib/card/card-text';
+import FlatButton from 'material-ui/lib/flat-button'
 
 export default class DishCard extends React.Component {
+
+
    getCategoryName(obj){
     if (obj && obj.type !== 'undefined') return obj.type;
     return 'Some Category';
   }
+
+  getYelp() {
+    
+  }
+
   render() {
     console.log('our userdata:',this.props.userData);
 
@@ -68,6 +76,12 @@ export default class DishCard extends React.Component {
               {this.props.data.veggie ? " [🌽]" : ""}
             </span>
           </row>
+          <CardActions>
+            <FlatButton label="Add to Favorites" onClick={this.addToFavorites} />
+          </CardActions>
+          <CardActions>
+            <FlatButton label="Find out More" onClick={this.getYelp} />
+          </CardActions>
         </Card>
       </div>
     );

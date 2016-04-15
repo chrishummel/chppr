@@ -45,13 +45,23 @@ console.log('at start of migration')
 			table.time('timestamp');
 			table.string('dish_name');
 			table.string('rest_name');
+			table.string('rest_city');
+			table.string('yelp_id');
 			table.integer('price');
 			table.string('picture_path');
 			table.boolean('veggie');
 			table.boolean('gluten_free');
 			table.boolean('spicy');
 			table.integer('rating');
-		})
+		}),
+
+		//location table
+		// knex.schema.createTable('locations', function (table) {
+		// 	table.increments('id').primary();
+		// 	table.string('state_name').unique();
+		// 	table.string('')
+
+		// })
 				
 	]).then(function(){
 		console.log('at end of migration')

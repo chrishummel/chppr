@@ -47,6 +47,9 @@ class Layout extends React.Component {
     this.getCardData();
     this.getCategoryData();
   }
+
+
+
   getFBToken(){
     //console.log('calling something');
     request.get('/auth/facebook')
@@ -116,6 +119,11 @@ class Layout extends React.Component {
   // dishDescriptionInput(dishDescription) {
   //   this.setState({dishDescription: dishDescription});
   // }
+
+  restaurantCityInput(restaurantCity) {
+    this.setState({restaurantCity: restaurantCity});
+  }
+
   dishPriceInput(dishPrice) {
     this.setState({dishPrice: dishPrice});
   }
@@ -146,6 +154,7 @@ class Layout extends React.Component {
           "timestamp": "01:30:00",
           "dish_name": this.state.dishName,
           "rest_name": this.state.restaurantName,
+          "rest_city": this.state.restaurantCity,
           "price": Number(this.state.dishPrice),
           "picture_path": this.state.photo,
           "veggie": this.state.vegClick,
@@ -157,7 +166,7 @@ class Layout extends React.Component {
     let displayDish = Object.assign({}, newDish);
     displayDish['username'] = this.state.yummy.username;
     displayDish['photo'] = this.state.yummy.photo;
-    
+
     console.log('our dish:',displayDish);
 
     let data = JSON.stringify(newDish);
@@ -179,6 +188,7 @@ class Layout extends React.Component {
         that.setState({
           dishName: '',
           restaurantName: '',
+          restaurantCity: '',
           dishDescription: '',
           dishPrice: '',
           dishRating: '',
@@ -195,7 +205,7 @@ class Layout extends React.Component {
 
   }
 
-  getCardData(){
+  getCardData() {
     // TODO - Replace this with a database call
     var that = this;
     // console.log('got our current dir:',__dirname)
@@ -278,6 +288,7 @@ class Layout extends React.Component {
           dishNameInput={this.dishNameInput.bind(this)}
           restaurantNameInput={this.restaurantNameInput.bind(this)}
           // dishDescriptionInput={this.dishDescriptionInput.bind(this)}
+          restaurantCityInput={this.restaurantCityInput.bind(this)}
           dishPriceInput={this.dishPriceInput.bind(this)}
           dishRatingInput={this.dishRatingInput.bind(this)}
           vegInput={this.vegInput.bind(this)}
@@ -290,6 +301,7 @@ class Layout extends React.Component {
           showAdd={this.state.showAdd}
           catAdd={this.catAdd.bind(this)}
           dishCat={this.state.dishCat}
+
           /> : null }
         <CardFeed
           boolVeg={this.state.veg}

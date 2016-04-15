@@ -21,6 +21,10 @@ export default class AddCard extends React.Component {
   // handleDishDescription(e) {
   //   this.props.dishDescriptionInput(e.target.value);
   // }
+
+  handleRestaurantCity(e) {
+    this.props.restaurantCityInput(e.target.value);
+  }
   handleDishPrice(e) {
     this.props.dishPriceInput(e.target.value);
   }
@@ -94,6 +98,10 @@ export default class AddCard extends React.Component {
           <TextField
             onChange={this.handleRestaurantName.bind(this)}
             floatingLabelText="Enter Name of Restaurant"
+          /><br/>
+          <TextField
+            onChange={this.handleRestaurantCity.bind(this)}
+            floatingLabelText="Enter City"
           /><br/>
           <TextField
             onChange={this.handleDishPrice.bind(this)}
