@@ -45,8 +45,8 @@ export default class DishCard extends React.Component {
       maxWidth: 'none',
     };
     const cardStyle = {
-      padding: "30px",
-      height: "700px"
+      height: "700px",
+      overflow: 'hidden',
     };
 
     const imageStyle = {
@@ -56,7 +56,7 @@ export default class DishCard extends React.Component {
     };
 
     const cardMediaStyle = {
-      height: "370px"
+      height: "350px"
     };
 
     const cardWrapperStyle = {
@@ -79,23 +79,11 @@ export default class DishCard extends React.Component {
             subtitle={"Category: "+ this.getCategoryName(this.props.categoryData[this.props.data.category - 1])}
             avatar={this.props.data.photo ? this.props.data.photo : "http://lorempixel.com/200/200/"}
           />
-          <CardMedia style={cardMediaStyle}>
-              <img style={imageStyle} src={this.props.data.picture_path} />
+          <CardMedia
+            overlay={<CardTitle title={this.props.data.dish_name} subtitle={this.props.data.rest_name} />}
+          >
+            <img src={this.props.data.picture_path} />
           </CardMedia>
-          <CardTitle
-            title={this.props.data.dish_name}
-            subtitle={this.props.data.rest_name}
-          />
-          <div>
-            <strong style={{clear: "none", float: "right"}}>
-              ${this.props.data.price}
-            </strong>
-            <span style={{float: "left"}}>
-              {this.props.data.spicy ? " [🌶]" : ""}
-              {this.props.data.gluten_free ? " [🚫🍞]" : ""}
-              {this.props.data.veggie ? " [🌽]" : ""}
-            </span>
-          </div>
           <div>
             <Dialog
               title={this.props.yelpBasics ? this.props.yelpBasics.name : 'loading...'}
@@ -123,13 +111,15 @@ export default class DishCard extends React.Component {
             </Dialog>
             
           </div>
-          <RaisedButton 
-            label="learn more"
-            secondary={true}
-            style={customContentStyle}
-            onTouchTap={this.handleOpen}
-            //onClick={this.learnMore.bind(this)}
-          />
+          <CardActions>
+            <RaisedButton 
+              label="learn more"
+              secondary={true}
+              style={customContentStyle}
+              onTouchTap={this.handleOpen}
+              //onClick={this.learnMore.bind(this)}
+            />
+          </CardActions>
           <CardActions>
             <RaisedButton 
               primary={true}
@@ -139,6 +129,16 @@ export default class DishCard extends React.Component {
               disabled={this.state.favorited ? true : false} 
             />
           </CardActions>
+          <div>
+            <strong class="price">
+              ${this.props.data.price}
+            </strong>
+            <span class="emoji" style={{float: "left"}}>
+              {this.props.data.spicy ? " 🌶" : ""}
+              {this.props.data.gluten_free ? " 🚫🍞" : ""}
+              {this.props.data.veggie ? " 🌽" : ""}
+            </span>
+          </div>
         </Card>
       </div>
     );

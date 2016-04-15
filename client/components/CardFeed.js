@@ -12,7 +12,7 @@ export default class CardFeed extends React.Component {
 
   render() {
     return (
-      <div>
+      <div class="bodyWrap">
         {this.props.cardData.map((card) => this.matchesUserFilters(card) ?
 
           <DishCard

@@ -62,10 +62,6 @@ export default class AddCard extends React.Component {
       dropzone: {
         // float: 'left'
       },
-      block: {
-        display: 'inline-block',
-        paddingLeft: 10,
-      },
       text: {
         padding: 5
       },
@@ -80,15 +76,16 @@ export default class AddCard extends React.Component {
     };
 
     return (
-      <div style={styles.block}>
+      <div class="addCard">
 
         <div style={styles.boxes}>
-          <div style={styles.dropzone}>
+          <div class="dropzone">
             <h3>drop zone space</h3>
+            {this.props.viewPhoto ? <div><br/>Image Preview: <br/><img width='250' src={this.props.viewPhoto} /></div> : null} 
             <Dropzone multiple={false} accept={'image/*'} onDrop={this.onDrop.bind(this)}>
               <div style={styles.text}>Drag your photo here, or click to select a file to upload.</div>
             </Dropzone>
-            {this.props.viewPhoto ? <div><br/>Image Preview: <br/><img width='250' src={this.props.viewPhoto} /></div> : null} 
+            
           </div>
           <br/>
           <TextField

@@ -1,6 +1,18 @@
 body{
   background: #301471;
 }
+.bodyWrap{
+  padding: 0 75px;
+}
+.dropzone img{
+  float: right;
+}
+.addCard{
+  padding: 50px;
+  background-color: #fff;
+  width: 750px;
+  margin: 0 auto 40px;
+}
 .user{
   margin-top: 7px;
   float: right;
@@ -14,4 +26,24 @@ body{
 }
 .user p{
   float: right;
+}
+.cardWrapper{
+  position: relative;
+}
+.price{
+  position: absolute;
+  right: 20px;
+  top: -5px;
+  color: #fff;
+  background-color: red;
+  padding: 15px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-size: 1.7em;
+}
+.emoji{
+  font-size: 2em;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
 }
