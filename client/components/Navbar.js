@@ -32,6 +32,13 @@ export default class Navbar extends React.Component {
     this.props.stateToggle('showAdd');
   }
 
+  handleShowFavs() {
+    console.log('in nav bar: ', this.props.showFavs)
+    this.props.stateToggle('showFavs')
+    this.props.getUserFavs()
+    console.log('in nav bar: ', this.props.showFavs)
+  }
+
   // getFavs() {
   //   var that = this;
   //   fetch('http://localhost:4000/myfavs', {
@@ -111,6 +118,15 @@ export default class Navbar extends React.Component {
             primary={true} 
             onClick={this.handleShowAdd.bind(this)} 
             label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} 
+            default={true} style={styles.button} 
+            disabled={!this.props.yummy}
+            float="left"
+          />  
+
+          <RaisedButton 
+            primary={true} 
+            onClick={this.handleShowFavs.bind(this)} 
+            label={"My Favorites"} 
             default={true} style={styles.button} 
             disabled={!this.props.yummy}
             float="left"

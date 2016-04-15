@@ -6,6 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Navbar from "./components/Navbar"
 import AddCard from "./components/AddCard"
 import CardFeed from "./components/CardFeed"
+import MyFavsFeed from "./components/MyFavsFeed"
 
 import Login from "./components/Login"
 
@@ -41,7 +42,9 @@ class Layout extends React.Component {
       spicyClick: false,
       photo: null,
       viewPhoto: null,
-      dishCat: 999
+      dishCat: 999,
+      showMyFavs: false,
+      myFavs: []
     };
 
     this.getCardData();
@@ -283,6 +286,33 @@ class Layout extends React.Component {
      });
    }
 
+   getUserFavs() {
+    var that = this;
+    var user = {
+      userID: this.state.yummy.uid
+    }
+
+    fetch('http://localhost:4000/allmyfavs', {  
+        method: 'post',  
+         headers: {  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: user   
+    })
+    .then(function(res){
+      return res.json()
+    })
+    .then(function(json){
+      console.log('before or after')
+      that.setState({myFavs: json})
+    })
+    .catch(function(err) {
+       console.log('something went wrong getting userFavs', err);
+     });
+
+   }
+
   render() {
 
     // console.log("client.js state:", this.state);
@@ -292,6 +322,7 @@ class Layout extends React.Component {
         <Navbar
           auth={this.state.auth}
           yummy={this.state.yummy}
+          myFavs={this.state.myFavs}
           authToggle={this.authToggle.bind(this)}
           getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
@@ -302,6 +333,7 @@ class Layout extends React.Component {
           category={this.state.category}
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
+          getUserFavs={this.getUserFavs.bind(this)}
         />
         <br />
         
@@ -334,6 +366,17 @@ class Layout extends React.Component {
           userData={this.state.userData}
           categoryData={this.state.categoryData}
         />
+
+        { this.state.showMyFavs ? <MyFavsFeed
+          boolVeg={this.state.veg}
+          boolGF={this.state.gf}
+          boolNoSpice={this.state.noSpice}
+          myFavs={this.state.myFavs}
+          category={this.state.category}
+          userData={this.state.userData}
+          addToFavorites={this.addToFavorites.bind(this)}
+          categoryData={this.state.categoryData}
+        /> : null}
       </div>
     );
   }

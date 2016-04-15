@@ -167,7 +167,7 @@ app.post('/myfavs', function(req, res) {
   })
 });
 
-app.get('/myfavs', function(req, res) {
+app.post('/allmyfavs', function(req, res) {
     return Favorites.getFavByUserID(7)
     .then(function(resp) {
       console.log('get MyFav resp: ', resp);
@@ -177,7 +177,7 @@ app.get('/myfavs', function(req, res) {
       }))
     })
     .then(function(resp) {
-      //console.log("post single: ", resp);
+      console.log("allmyfavs: ", resp);
       var flattenResp = resp.reduce(function(a, b) { return a.concat(b) });
       res.json(flattenResp);
     })
@@ -212,7 +212,7 @@ app.get('/auth/facebook/callback',
 
 
  var request_yelp = function(set_parameters) {
-  console.log('yelp function working')
+  
   /* The type of request */
   var httpMethod = 'GET';
 
@@ -236,7 +236,7 @@ app.get('/auth/facebook/callback',
     oauth_version : '1.0'
   };
 
-  console.log(n().toString().substr(0,10));
+  
   /* We combine all the parameters in order of importance */ 
   var parameters = _.assign(set_parameters, required_parameters);
 
@@ -247,17 +247,17 @@ app.get('/auth/facebook/callback',
   /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
   /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
   var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
-  console.log('signature:', signature)
+  
   /* We add the signature to the list of paramters */
   parameters.oauth_signature = signature;
 
   /* Then we turn the paramters object, to a query string */
   var paramURL = qs.stringify(parameters);
-  console.log('paramURL:', paramURL)
+  
 
   /* Add the query string to the url */
   var apiURL = url+'?'+paramURL;
-  console.log('apiURL:', apiURL)
+  
   /* Then we use request to send make the API Request */
   // app.get('https://api.yelp.com/v2/business/Liberty-Kitchen-austin', function(req, res){
   //   console.log('yelp api', req.body);
@@ -265,9 +265,9 @@ app.get('/auth/facebook/callback',
   // })
 
   request(apiURL, function(error, response, body){
-    console.log('body', body);
+    
     var data = JSON.parse(body)
-    console.log('location', data.location);
+    
     //return callback(error, response, body);
   });
 
