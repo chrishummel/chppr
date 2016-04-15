@@ -11,6 +11,9 @@ Post.create = function (incomingAttrs) {
     .then(function (result) {
       // Prepare new user for outside world
       return result[0];
+    })
+    .catch(function(err){
+      console.log('here is the problem:', err);
     });
 };
 

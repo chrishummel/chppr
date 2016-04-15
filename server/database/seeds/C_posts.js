@@ -41,6 +41,7 @@ exports.seed = function (knex, Promise) {
 			dish_name: "Green Chile Queso",
 			rest_name: "Torchy's Tacos",
 			rest_city: "Austin",
+			yelp_id: "torchys-tacos-austin",
 			price: 5,
 			picture_path: "/pictures/green_chile_queso.jpg",
 			veggie: true,
@@ -55,6 +56,7 @@ exports.seed = function (knex, Promise) {
 			dish_name: "Double Cheese Burger",
 			rest_name: "Shake Shack",
 			rest_city: "Austin",
+			yelp_id: "shake-shack-austin",
 			price: 8,
 			picture_path: "/pictures/shake_shack.jpg",
 			veggie: false,
@@ -69,6 +71,7 @@ exports.seed = function (knex, Promise) {
 			dish_name: "Brick Toast",
 			rest_name: "TeaHaus",
 			rest_city: "Austin",
+			yelp_id: "tea-haus-austin",
 			price: 6,
 			picture_path: "/pictures/brick_toast.jpg",
 			veggie: true,
@@ -83,6 +86,7 @@ exports.seed = function (knex, Promise) {
 			dish_name: "Tonkotsu Original Ramen",
 			rest_name: "Ramen Tatsu Ya",
 			rest_city: "Austin",
+			yelp_id: "ramen-tatsu-ya-austin",
 			price: 9,
 			picture_path: "/pictures/ramen.jpg",
 			veggie: false,
@@ -97,27 +101,13 @@ exports.seed = function (knex, Promise) {
 			dish_name: "Carrot Ginger Cayenne Power Up",
 			rest_name: "JuiceLand",
 			rest_city: "Austin",
+			yelp_id: "juiceland-austin",
 			price: 11,
 			picture_path: "/pictures/carrot.jpg",
 			veggie: true,
 			gluten_free: true,
 			spicy: true,
 			rating: 3
-		}),
-		
-		knex('posts').insert({
-			user_id: 3,
-			category: 1,
-			timestamp: "08:30:00PM",
-			dish_name: "Carne Asada Tacos",
-			rest_name: "King Taco",
-			rest_city: "Austin",
-			price: 7,
-			picture_path: "/pictures/tacos.jpg",
-			veggie: false,
-			gluten_free: false,
-			spicy: false,
-			rating: 5
 		})
 	);
 };

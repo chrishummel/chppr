@@ -35,6 +35,7 @@ var n = require('nonce')();
 var request = require('request');  
 var qs = require('querystring');  
 var _ = require('lodash');
+var axios = require('axios');
 
 
 var storage = multer.diskStorage({
@@ -81,6 +82,63 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+ /* Function for yelp call
+ * ------------------------
+ * set_parameters: object with params to search
+ */
+
+
+ var request_yelp = function(set_parameters, type) {
+  console.log('yelp function working')
+  /* The type of request */
+  var httpMethod = 'GET';
+  /* We set the require parameters here */
+  var required_parameters = {
+    oauth_consumer_key : '2kWm_qTCzUEfSVYUjU2fIw', //process.env.oauth_consumer_key
+    oauth_token : 'GpE0chVSnbgJ0edMj1DAor8mJuv3sGyL', //process.env.oauth_token
+    oauth_nonce : n(),
+    oauth_timestamp : n().toString().substr(0,10),
+    oauth_signature_method : 'HMAC-SHA1',
+    oauth_version : '1.0'
+  };
+
+  /* The url we are using for the request */
+  if (type === "addCard") {
+    var url = 'http://api.yelp.com/v2/search';
+    var parameters = _.assign(set_parameters, required_parameters);
+
+    //var url = "http://api.yelp.com/v2/business/p-terrys-burger-stand-austin-8"
+  } else {
+    var url = "http://api.yelp.com/v2/business/" + set_parameters;
+    console.log('set_parameters:', set_parameters)
+     /* We combine all the parameters in order of importance */ 
+    var parameters = _.assign(required_parameters);
+
+  }
+
+  /* We set our secrets here */
+  var consumerSecret = 'qaR9eRgkjIfoz3RKvubcVhUnbCk'; //process.env.consumerSecret
+  var tokenSecret = 'kF-EkG1-b2mE9olO9LEdFk0ER6c'; //process.env.tokenSecret
+
+  /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
+  /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
+  var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
+  console.log('signature:', signature)
+  /* We add the signature to the list of paramters */
+  parameters.oauth_signature = signature;
+
+  /* Then we turn the paramters object, to a query string */
+  var paramURL = qs.stringify(parameters);
+  console.log('paramURL:', paramURL)
+
+  /* Add the query string to the url */
+  var apiURL = url+'?'+paramURL;
+  
+  return apiURL;  
+};
+
+
 // ---------- Routes Start Here ------------- //
 
 //Login route, default route
@@ -89,12 +147,6 @@ app.get('/', function(req, res) {
   if (req.user) {
     res.cookie('yummy', JSON.stringify(req.user))
   }
-  request_yelp(
-    // {
-    //   term: "Torchy's-Tacos",
-    //   location: 'Austin'
-    // }
-  );
   res.sendFile(assetFolder + '/index.html')
 });
 
@@ -114,18 +166,41 @@ app.get('/feed', function (req, res) {
 //post endpoint for user feed
 app.post('/feed', function(req, res) {
   var card = req.body;
-  console.log("REQ BODY:", req);
-  if (card === {}) {
-    return res.status(400).send("failed");
-  }
-  Posts.create(card)
-  .then(function(post){
-    res.status(201).send(post);
+  console.log("REQ BODY City:", req.body.rest_city);
+
+  //Compiling Yelp API's API URL based on user input
+  var restCity = card.rest_city;
+  var restName = card.rest_name;
+
+  var apiURL = request_yelp(
+    {
+        term: restName,
+        location: restCity
+    }
+  , 'addCard');
+  console.log("API URL:", apiURL)
+  //making API call to yelp using the compiled API URL
+  axios({
+    method: "GET",
+    url: apiURL
   })
-  .catch(function (err) {
-        console.log('Error creating new post: ', err);
-        return res.status(400).send(err);
-      })
+  .then(function(response) {
+    console.log('response:', response.data.businesses[0].id);
+    card.yelp_id = response.data.businesses[0].id;
+
+    Posts.create(card)
+    .then(function(post){
+      res.status(201).send(post);
+    })
+    .catch(function (err) {
+          console.log('Error creating new post: ', err);
+          return res.status(400).send(err);
+    })
+    
+  })
+  .catch(function(err) {
+    console.log("Yelp Server Error:", err)
+  })
 });
 
 app.post('/upload', upload.any(), function (req, res) {
@@ -138,6 +213,25 @@ app.post('/upload', upload.any(), function (req, res) {
     
       res.status(201).send(filename);
 });
+
+app.get('/yelp', function(req, res) {
+  var id = req.query.yelpId;
+  console.log('req.query.yelpID:', id);
+  //making API call to yelp using the compiled API URL
+  var apiURL = request_yelp(id, 'getCard');
+  console.log("API URL:", apiURL)
+  axios({
+    method: "GET",
+    url: apiURL
+  })
+  .then(function(response) {
+    res.json(response);  
+  })
+  .catch(function(err) {
+    console.log("Yelp Server Error:", err)
+  })
+
+})
 
 // endpoint thats only used to update categories table
 app.post('/categories', function(req, res) {
@@ -204,74 +298,7 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
   });
 
- /* Function for yelp call
- * ------------------------
- * set_parameters: object with params to search
- * callback: callback(error, response, body)
- */
 
-
- var request_yelp = function(set_parameters) {
-  
-  /* The type of request */
-  var httpMethod = 'GET';
-
-  /* The url we are using for the request */
-  //var url = 'http://api.yelp.com/v2/search';
-  var url = "http://api.yelp.com/v2/business/torchys-tacos-Austin"
-
-  /* We can setup default parameters here */
-  // var default_parameters = {
-  //   location: 'San+Francisco',
-  //   sort: '2'
-  // };
-
-  /* We set the require parameters here */
-  var required_parameters = {
-    oauth_consumer_key : '2kWm_qTCzUEfSVYUjU2fIw', //process.env.oauth_consumer_key
-    oauth_token : 'GpE0chVSnbgJ0edMj1DAor8mJuv3sGyL', //process.env.oauth_token
-    oauth_nonce : n(),
-    oauth_timestamp : n().toString().substr(0,10),
-    oauth_signature_method : 'HMAC-SHA1',
-    oauth_version : '1.0'
-  };
-
-  
-  /* We combine all the parameters in order of importance */ 
-  var parameters = _.assign(set_parameters, required_parameters);
-
-  /* We set our secrets here */
-  var consumerSecret = 'qaR9eRgkjIfoz3RKvubcVhUnbCk'; //process.env.consumerSecret
-  var tokenSecret = 'kF-EkG1-b2mE9olO9LEdFk0ER6c'; //process.env.tokenSecret
-
-  /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
-  /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
-  var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
-  
-  /* We add the signature to the list of paramters */
-  parameters.oauth_signature = signature;
-
-  /* Then we turn the paramters object, to a query string */
-  var paramURL = qs.stringify(parameters);
-  
-
-  /* Add the query string to the url */
-  var apiURL = url+'?'+paramURL;
-  
-  /* Then we use request to send make the API Request */
-  // app.get('https://api.yelp.com/v2/business/Liberty-Kitchen-austin', function(req, res){
-  //   console.log('yelp api', req.body);
-  //   return req.body;
-  // })
-
-  request(apiURL, function(error, response, body){
-    
-    var data = JSON.parse(body)
-    
-    //return callback(error, response, body);
-  });
-
-};
 
 app.get('/users', function (req, res) {
 	Users.getUsers()

@@ -92,7 +92,9 @@ export default class DishCard extends React.Component {
               onClick={this.handleFavClick.bind(this)} 
             />
           </CardActions>
+
           </div>
+
         </Card>
       </div>
     );
