@@ -28,6 +28,7 @@ class Layout extends React.Component {
       noSpice: false,
       category: null,
       cardData: [],
+      categoryData: [],
       showAdd: false,
       showFavs: false,
       dishName: '',
@@ -44,6 +45,7 @@ class Layout extends React.Component {
     };
 
     this.getCardData();
+    this.getCategoryData();
   }
   getFBToken(){
     //console.log('calling something');
@@ -59,6 +61,7 @@ class Layout extends React.Component {
   authToggle(status){
     if(status == 'logout'){
       cookie.remove('yummy', { path: '/' });
+      this.setState({showAdd: false});
       request('GET', '/logout').end(function(err,res){
         if (err) {
           console.log('client error', err);
@@ -138,8 +141,7 @@ class Layout extends React.Component {
     var that = this;
     var newDish = {
 
-          // TODO - figure out categories and users
-          "user_id": 5,
+          "user_id": this.state.yummy.uid,
           "category": this.state.dishCat,
           "timestamp": "01:30:00",
           "dish_name": this.state.dishName,
@@ -151,7 +153,12 @@ class Layout extends React.Component {
           "spicy": this.state.spicyClick,
           "rating": this.state.dishRating
         }
+    //copy this object and use a modified version for display
+    let displayDish = Object.assign({}, newDish);
+    displayDish['username'] = this.state.yummy.username;
+    displayDish['photo'] = this.state.yummy.photo;
     
+    console.log('our dish:',displayDish);
 
     let data = JSON.stringify(newDish);
 
@@ -167,7 +174,7 @@ class Layout extends React.Component {
     .then(function (data) {  
       console.log('Request succeeded with JSON response', data);  
       console.log("New dish posted");
-        that.state.cardData.unshift(newDish);
+        that.state.cardData.unshift(displayDish);
         that.setState({showAdd: false});
         that.setState({
           dishName: '',
@@ -186,44 +193,12 @@ class Layout extends React.Component {
       console.log('Request failed', error);  
     });
 
-  ////// VERY HACKY FIX //////
-    // if (this.state.dishRating !== '') {
-    //   $.ajax({
-    //     type: "POST",
-    //     url: "/feed",
-    //     data: newDish
-    //     // cache: false,
-    //     // processData: false,
-    //     // contentType: false
-    //   })
-    //   .done(function() {
-    //     console.log("New dish posted");
-    //     that.state.cardData.unshift(newDish);
-    //     that.setState({showAdd: false});
-    //     that.setState({
-    //       dishName: '',
-    //       restaurantName: '',
-    //       dishDescription: '',
-    //       dishPrice: '',
-    //       dishRating: '',
-    //       vegClick: false,
-    //       gfClick: false,
-    //       spicyClick: false,
-    //       photo: null,
-    //       dishCat: null
-    //     });
-    //   })
-    //   .fail(function() {
-    //     console.log("Failed to post new dish");
-    //   })
-    // }
-
   }
 
   getCardData(){
     // TODO - Replace this with a database call
     var that = this;
-
+    // console.log('got our current dir:',__dirname)
     fetch('http://localhost:4000/feed', {
       method: 'GET',
       headers: {  
@@ -241,21 +216,41 @@ class Layout extends React.Component {
     .catch(function(err) {
       console.log('something went wrong getting data', err);
     });
-        /*
-    $.ajax({
-      url: '/feed',
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        console.log('got this data from /feed', data);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log('getCardData failed, status: ', status, 'error: ', err);
-      }.bind(this)
-    
-    });
-    */
+
   }
+  getUserData(){
+     // TODO - Replace this with a database call
+     var that = this;
+ 
+     fetch('http://localhost:4000/users')
+     .then(function(res) {
+       return res.json();
+     })
+     .then(function(json) {
+       console.log('got this json', json);
+       that.setState({userData: json})
+     })
+     .catch(function(err) {
+       console.log('something went wrong getting users', err);
+     });
+   }
+ 
+   getCategoryData(){
+     // TODO - Replace this with a database call
+     var that = this;
+ 
+     fetch('http://localhost:4000/categories')
+     .then(function(res) {
+       return res.json();
+     })
+     .then(function(json) {
+       console.log('got this json', json);
+       that.setState({categoryData: json})
+     })
+     .catch(function(err) {
+       console.log('something went wrong getting categories', err);
+     });
+   }
 
   render() {
 
@@ -278,12 +273,7 @@ class Layout extends React.Component {
           stateToggle={this.stateToggle.bind(this)}
         />
         <br />
-        {this.state.auth ? <Login
-
-          /> : null
-        }
-
-        <br/>
+        
         { this.state.showAdd ? <AddCard 
           dishNameInput={this.dishNameInput.bind(this)}
           restaurantNameInput={this.restaurantNameInput.bind(this)}
@@ -307,6 +297,8 @@ class Layout extends React.Component {
           boolNoSpice={this.state.noSpice}
           cardData={this.state.cardData}
           category={this.state.category}
+          userData={this.state.userData}
+          categoryData={this.state.categoryData}
         />
       </div>
     );

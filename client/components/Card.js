@@ -8,8 +8,13 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import CardText from 'material-ui/lib/card/card-text';
 
 export default class DishCard extends React.Component {
-
+   getCategoryName(obj){
+    if (obj && obj.type !== 'undefined') return obj.type;
+    return 'Some Category';
+  }
   render() {
+    console.log('our userdata:',this.props.userData);
+
 
     const cardStyle = {
       padding: "30px",
@@ -36,14 +41,15 @@ export default class DishCard extends React.Component {
     };
 
     return (
+
       <div className="cardWrapper col-sm-6 col-lg-4" style={cardWrapperStyle}>
         <Card
           className=""
           style={cardStyle}>
           <CardHeader
-            title={"User Number "+ this.props.data.user_id}
-            subtitle={"Category Number "+ this.props.data.category}
-            avatar="http://lorempixel.com/200/200/"
+            title={"User: "+ this.props.data.username}
+            subtitle={"Category: "+ this.getCategoryName(this.props.categoryData[this.props.data.category - 1])}
+            avatar={this.props.data.photo ? this.props.data.photo : "http://lorempixel.com/200/200/"}
           />
           <CardMedia style={cardMediaStyle}>
               <img style={imageStyle} src={this.props.data.picture_path} />
