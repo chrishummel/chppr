@@ -56,7 +56,21 @@ Users.verify = function (username, password) {
 		})
 }
 
+Users.getUsers = function () { 
+  return db.select('*').from('users')
+    .then(function (result) {
+      // Prepare new user for outside world
+      return result;
+    });
+};
 
+Users.getCategories = function () { 
+  return db.select('*').from('categories')
+    .then(function (result) {
+      // Prepare new user for outside world
+      return result;
+    });
+};
 
 //only did categories here because we only use it once! not an actual relation to the users
 Users.categories = function (incomingAttrs) {
