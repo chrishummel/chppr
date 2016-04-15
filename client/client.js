@@ -48,8 +48,6 @@ class Layout extends React.Component {
     this.getCategoryData();
   }
 
-
-
   getFBToken(){
     //console.log('calling something');
     request.get('/auth/facebook')

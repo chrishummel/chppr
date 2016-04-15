@@ -16,10 +16,6 @@ export default class DishCard extends React.Component {
     return 'Some Category';
   }
 
-  getYelp() {
-    
-  }
-
   render() {
     console.log('our userdata:',this.props.userData);
 
