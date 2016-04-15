@@ -226,7 +226,7 @@ class Layout extends React.Component {
     .catch(function(err) {
       console.log('something went wrong getting data', err);
     });
-
+  }
   addToFavorites(postID) {
     var that = this;
     var fav = {

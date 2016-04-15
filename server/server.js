@@ -28,15 +28,13 @@ var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
 var Favorites = require('./models/favorites');
-<<<<<<< HEAD
-=======
+
 //for yelp api
 var oauthSignature = require('oauth-signature');  
 var n = require('nonce')();  
 var request = require('request');  
 var qs = require('querystring');  
 var _ = require('lodash');
->>>>>>> feature/dropzone
 
 
 var storage = multer.diskStorage({
