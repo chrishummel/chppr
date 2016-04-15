@@ -262,7 +262,8 @@ app.post('/myfavs', function(req, res) {
 });
 
 app.post('/allmyfavs', function(req, res) {
-    return Favorites.getFavByUserID(7)
+    console.log(req.body.userID)
+    return Favorites.getFavByUserID(req.body.userID)
     .then(function(resp) {
       console.log('get MyFav resp: ', resp);
       return Promise.all(resp.map(function(dbObj) {

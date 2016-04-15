@@ -288,8 +288,10 @@ class Layout extends React.Component {
    getUserFavs() {
     var that = this;
     var user = {
-      userID: this.state.yummy.uid
+      userID: that.state.yummy.uid
     }
+
+    let data = JSON.stringify(user)
 
     fetch('http://localhost:4000/allmyfavs', {  
         method: 'post',  
@@ -297,7 +299,7 @@ class Layout extends React.Component {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
          },  
-        body: user   
+        body: data   
     })
     .then(function(res){
       return res.json()
