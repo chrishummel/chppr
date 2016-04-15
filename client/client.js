@@ -116,6 +116,11 @@ class Layout extends React.Component {
   // dishDescriptionInput(dishDescription) {
   //   this.setState({dishDescription: dishDescription});
   // }
+
+  restaurantCityInput(restaurantCity) {
+    this.setState({restaurantCity: restaurantCity});
+  }
+
   dishPriceInput(dishPrice) {
     this.setState({dishPrice: dishPrice});
   }
@@ -147,6 +152,7 @@ class Layout extends React.Component {
           "timestamp": "01:30:00",
           "dish_name": this.state.dishName,
           "rest_name": this.state.restaurantName,
+          "rest_city": this.state.restaurantCity,
           "price": Number(this.state.dishPrice),
           "picture_path": this.state.photo,
           "veggie": this.state.vegClick,
@@ -174,6 +180,7 @@ class Layout extends React.Component {
         that.setState({
           dishName: '',
           restaurantName: '',
+          restaurantCity: '',
           dishDescription: '',
           dishPrice: '',
           dishRating: '',
@@ -244,6 +251,7 @@ class Layout extends React.Component {
           dishNameInput={this.dishNameInput.bind(this)}
           restaurantNameInput={this.restaurantNameInput.bind(this)}
           // dishDescriptionInput={this.dishDescriptionInput.bind(this)}
+          restaurantCityInput={this.restaurantCityInput.bind(this)}
           dishPriceInput={this.dishPriceInput.bind(this)}
           dishRatingInput={this.dishRatingInput.bind(this)}
           vegInput={this.vegInput.bind(this)}

@@ -45,6 +45,8 @@ console.log('at start of migration')
 			table.time('timestamp');
 			table.string('dish_name');
 			table.string('rest_name');
+			table.string('rest_city');
+			table.string('yelp_id');
 			table.integer('price');
 			table.string('picture_path');
 			table.boolean('veggie');

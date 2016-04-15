@@ -88,7 +88,12 @@ app.get('/', function(req, res) {
   if (req.user) {
     res.cookie('yummy', JSON.stringify(req.user))
   }
-  request_yelp();
+  request_yelp(
+    // {
+    //   term: "Torchy's-Tacos",
+    //   location: 'Austin'
+    // }
+  );
   res.sendFile(assetFolder + '/index.html')
 });
 
@@ -212,7 +217,8 @@ app.get('/auth/facebook/callback',
   var httpMethod = 'GET';
 
   /* The url we are using for the request */
-  var url = 'http://api.yelp.com/v2/business/Liberty-Kitchen-austin';
+  //var url = 'http://api.yelp.com/v2/search';
+  var url = "http://api.yelp.com/v2/business/torchys-tacos-Austin"
 
   /* We can setup default parameters here */
   // var default_parameters = {
