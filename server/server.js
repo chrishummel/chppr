@@ -168,13 +168,10 @@ app.post('/myfavs', function(req, res) {
 });
 
 app.get('/myfavs', function(req, res) {
-    return Favorites.getFavByUserID(2)
+    return Favorites.getFavByUserID(7)
     .then(function(resp) {
       console.log('get MyFav resp: ', resp);
       return Promise.all(resp.map(function(dbObj) {
-        var post = {};
-        // post.query = {};
-        // post.query.unique_id = dbObj.postID;
         var postID = dbObj.postID;
         return Posts.single(postID);
       }))
