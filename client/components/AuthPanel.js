@@ -29,7 +29,7 @@ export default class AuthPanel extends React.Component {
       },
     };
     return (
-      <div>
+      <div float="right">
         {this.props.yummy ? 
           <div class="user">
             <img src={this.props.yummy.photo} />

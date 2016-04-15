@@ -28,7 +28,6 @@ class Layout extends React.Component {
       noSpice: false,
       category: null,
       cardData: [],
-      userData: [],
       categoryData: [],
       showAdd: false,
       showFavs: false,
@@ -46,7 +45,6 @@ class Layout extends React.Component {
     };
 
     this.getCardData();
-    this.getUserData();
     this.getCategoryData();
   }
   getFBToken(){
@@ -143,7 +141,6 @@ class Layout extends React.Component {
     var that = this;
     var newDish = {
 
-          // TODO - figure out categories and users
           "user_id": this.state.yummy.uid,
           "category": this.state.dishCat,
           "timestamp": "01:30:00",
@@ -156,7 +153,12 @@ class Layout extends React.Component {
           "spicy": this.state.spicyClick,
           "rating": this.state.dishRating
         }
-    console.log('our dish:',newDish);
+    //copy this object and use a modified version for display
+    let displayDish = Object.assign({}, newDish);
+    displayDish['username'] = this.state.yummy.username;
+    displayDish['photo'] = this.state.yummy.photo;
+    
+    console.log('our dish:',displayDish);
 
     let data = JSON.stringify(newDish);
 
@@ -172,7 +174,7 @@ class Layout extends React.Component {
     .then(function (data) {  
       console.log('Request succeeded with JSON response', data);  
       console.log("New dish posted");
-        that.state.cardData.unshift(newDish);
+        that.state.cardData.unshift(displayDish);
         that.setState({showAdd: false});
         that.setState({
           dishName: '',
