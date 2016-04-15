@@ -14,7 +14,7 @@ export default class CardFeed extends React.Component {
     return (
       <div>
         {this.props.cardData.map((card) => this.matchesUserFilters(card) ?
-          <DishCard data={card} /> :
+          <DishCard data={card} addToFavorites={this.props.addToFavorites}/> :
           null)}
       </div>
     );

@@ -210,6 +210,27 @@ class Layout extends React.Component {
         
   }
 
+  addToFavorites(postID) {
+    var that = this;
+    var fav = {
+      userID: that.state.yummy.uid,
+      postID: postID
+    }
+    console.log(fav)
+    let data = JSON.stringify(fav);
+
+    fetch('http://localhost:4000/myfavs', {  
+        method: 'post',  
+         headers: {  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         },  
+        body: data   
+    })
+    .then(function(resp){
+      console.log('addfavs response: ', resp)
+    })
+  }
   
 
   render() {
@@ -263,6 +284,7 @@ class Layout extends React.Component {
           boolNoSpice={this.state.noSpice}
           cardData={this.state.cardData}
           category={this.state.category}
+          addToFavorites={this.addToFavorites.bind(this)}
         />
       </div>
     );

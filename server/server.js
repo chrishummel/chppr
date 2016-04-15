@@ -27,7 +27,7 @@ var multer  = require('multer')
 var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
-var favorites = require('./models/favorites');
+var Favorites = require('./models/favorites');
 
 
 var storage = multer.diskStorage({
@@ -144,8 +144,8 @@ app.post('/categories', function(req, res) {
 app.post('/myfavs', function(req, res) {
   var fav = req.body;
   Favorites.add(fav.userID, fav.postID)
-  .then(function(res) {
-    res.status(201).send(res);
+  .then(function(resp) {
+    res.status(201).send(resp);
   })
   .catch(function(err) {
     res.status(400).send(err);

@@ -10,26 +10,20 @@ import FlatButton from 'material-ui/lib/flat-button'
 
 export default class DishCard extends React.Component {
 
-  addToFavorites() {
-    var that = this;
-    var fav = {
-      user_id: 1,
-      post_id: 1
+  constructor() {
+    super()
+    this.state = {
+      favorited: false
     }
-    let data = JSON.stringify(fav);
-
-    fetch('http://localhost:4000/myfavs', {  
-        method: 'post',  
-         headers: {  
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-         },  
-        body: data   
-    })
-    .then(function(resp){
-      console.log('addfavs response: ', resp)
-    })
   }
+
+  handleFavClick() {
+  
+    this.setState({favorited: true})
+    this.props.addToFavorites(this.props.data.postID);
+    
+  }
+  
 
   render() {
 
@@ -74,7 +68,7 @@ export default class DishCard extends React.Component {
             title={this.props.data.dish_name}
             subtitle={this.props.data.rest_name}
           />
-          <row>
+          <div >
             <strong style={{clear: "none", float: "right"}}>
               ${this.props.data.price}
             </strong>
@@ -83,10 +77,15 @@ export default class DishCard extends React.Component {
               {this.props.data.gluten_free ? " [🚫🍞]" : ""}
               {this.props.data.veggie ? " [🌽]" : ""}
             </span>
-          </row>
+          </div>
+          <div>
           <CardActions>
-            <FlatButton label="Add to Favorites" onClick={this.addToFavorites} />
+            <FlatButton 
+              label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
+              onClick={this.handleFavClick.bind(this)} 
+            />
           </CardActions>
+          </div>
         </Card>
       </div>
     );
