@@ -29,6 +29,11 @@ export default class DishCard extends React.Component {
   }
   
 
+  learnMore() {
+    let id = this.props.data.yelp_id;
+    this.props.getYelp(id);
+  }
+
   render() {
     console.log('our userdata:',this.props.userData);
 
@@ -75,7 +80,11 @@ export default class DishCard extends React.Component {
             title={this.props.data.dish_name}
             subtitle={this.props.data.rest_name}
           />
-          <div >
+          <FlatButton 
+            label="learn more"
+            onClick={this.learnMore}
+          />
+          <div>
             <strong style={{clear: "none", float: "right"}}>
               ${this.props.data.price}
             </strong>
@@ -86,6 +95,7 @@ export default class DishCard extends React.Component {
             </span>
           </div>
           <div>
+<<<<<<< HEAD
           <CardActions>
             <FlatButton 
               label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
@@ -95,6 +105,15 @@ export default class DishCard extends React.Component {
 
           </div>
 
+=======
+            <CardActions>
+              <FlatButton 
+                label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
+                onClick={this.handleFavClick.bind(this)} 
+              />
+            </CardActions>
+          </div>
+>>>>>>> development
         </Card>
       </div>
     );
