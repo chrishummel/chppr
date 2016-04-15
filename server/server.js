@@ -28,6 +28,12 @@ var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
 var Favorites = require('./models/favorites');
+//for yelp api
+var oauthSignature = require('oauth-signature');  
+var n = require('nonce')();  
+var request = require('request');  
+var qs = require('querystring');  
+var _ = require('lodash');
 
 
 var storage = multer.diskStorage({
@@ -82,6 +88,7 @@ app.get('/', function(req, res) {
   if (req.user) {
     res.cookie('yummy', JSON.stringify(req.user))
   }
+  request_yelp();
   res.sendFile(assetFolder + '/index.html')
 });
 
@@ -191,6 +198,75 @@ app.get('/auth/facebook/callback',
 
     res.redirect('/');
   });
+
+ /* Function for yelp call
+ * ------------------------
+ * set_parameters: object with params to search
+ * callback: callback(error, response, body)
+ */
+
+
+ var request_yelp = function(set_parameters) {
+  console.log('yelp function working')
+  /* The type of request */
+  var httpMethod = 'GET';
+
+  /* The url we are using for the request */
+  var url = 'http://api.yelp.com/v2/business/Liberty-Kitchen-austin';
+
+  /* We can setup default parameters here */
+  // var default_parameters = {
+  //   location: 'San+Francisco',
+  //   sort: '2'
+  // };
+
+  /* We set the require parameters here */
+  var required_parameters = {
+    oauth_consumer_key : '2kWm_qTCzUEfSVYUjU2fIw', //process.env.oauth_consumer_key
+    oauth_token : 'GpE0chVSnbgJ0edMj1DAor8mJuv3sGyL', //process.env.oauth_token
+    oauth_nonce : n(),
+    oauth_timestamp : n().toString().substr(0,10),
+    oauth_signature_method : 'HMAC-SHA1',
+    oauth_version : '1.0'
+  };
+
+  console.log(n().toString().substr(0,10));
+  /* We combine all the parameters in order of importance */ 
+  var parameters = _.assign(set_parameters, required_parameters);
+
+  /* We set our secrets here */
+  var consumerSecret = 'qaR9eRgkjIfoz3RKvubcVhUnbCk'; //process.env.consumerSecret
+  var tokenSecret = 'kF-EkG1-b2mE9olO9LEdFk0ER6c'; //process.env.tokenSecret
+
+  /* Then we call Yelp's Oauth 1.0a server, and it returns a signature */
+  /* Note: This signature is only good for 300 seconds after the oauth_timestamp */
+  var signature = oauthSignature.generate(httpMethod, url, parameters, consumerSecret, tokenSecret, { encodeSignature: false});
+  console.log('signature:', signature)
+  /* We add the signature to the list of paramters */
+  parameters.oauth_signature = signature;
+
+  /* Then we turn the paramters object, to a query string */
+  var paramURL = qs.stringify(parameters);
+  console.log('paramURL:', paramURL)
+
+  /* Add the query string to the url */
+  var apiURL = url+'?'+paramURL;
+  console.log('apiURL:', apiURL)
+  /* Then we use request to send make the API Request */
+  // app.get('https://api.yelp.com/v2/business/Liberty-Kitchen-austin', function(req, res){
+  //   console.log('yelp api', req.body);
+  //   return req.body;
+  // })
+
+  request(apiURL, function(error, response, body){
+    console.log('body', body);
+    var data = JSON.parse(body)
+    console.log('location', data.location);
+    //return callback(error, response, body);
+  });
+
+};
+
 
 // Static assets (html, etc.)
 var assetFolder = Path.resolve(__dirname, '../client')

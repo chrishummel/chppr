@@ -46,7 +46,7 @@ class Layout extends React.Component {
     this.getCardData();
   }
 
-  
+
 
   getFBToken(){
     //console.log('calling something');
@@ -189,7 +189,7 @@ class Layout extends React.Component {
     });
   }
 
-  getCardData(){
+  getCardData() {
     // TODO - Replace this with a database call
     var that = this;
 
@@ -212,8 +212,6 @@ class Layout extends React.Component {
     });
         
   }
-
-  
 
   render() {
 

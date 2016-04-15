@@ -51,7 +51,15 @@ console.log('at start of migration')
 			table.boolean('gluten_free');
 			table.boolean('spicy');
 			table.integer('rating');
-		})
+		}),
+
+		//location table
+		// knex.schema.createTable('locations', function (table) {
+		// 	table.increments('id').primary();
+		// 	table.string('state_name').unique();
+		// 	table.string('')
+
+		// })
 				
 	]).then(function(){
 		console.log('at end of migration')
