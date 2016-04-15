@@ -26,6 +26,8 @@ class Layout extends React.Component {
       auth: false,
       veg: false,
       gf: false,
+      yelpBasics:'',
+      yelpAddress:'',
       noSpice: false,
       category: null,
       cardData: [],
@@ -74,10 +76,8 @@ class Layout extends React.Component {
           console.log(res);
         }
       });
-      
 
-
-      console.log('deleted')
+      //console.log('deleted')
       this.setState({yummy:null});
     } else {
       this.setState({auth: !this.state.auth});
@@ -229,6 +229,24 @@ class Layout extends React.Component {
       console.log('something went wrong getting data', err);
     });
   }
+  getYelp(id){
+    var that = this;
+    fetch('http://localhost:4000/yelp?yelpId='+id, {  
+        method: 'get',  
+         headers: {  
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+         }
+    })
+    .then(function(raw) {
+       return raw.json();
+     })
+    .then(function(result){
+      console.log('got our card yelper:', result.data)
+      that.setState({yelpBasics: result.data});
+      that.setState({yelpAddress: result.data.location});
+    })
+  }
   addToFavorites(postID) {
     var that = this;
     var fav = {
@@ -363,8 +381,11 @@ class Layout extends React.Component {
           cardData={this.state.cardData}
           category={this.state.category}
           addToFavorites={this.addToFavorites.bind(this)}
+          getYelp={this.getYelp.bind(this)}
           userData={this.state.userData}
           categoryData={this.state.categoryData}
+          yelpBasics={this.state.yelpBasics}
+          yelpAddress={this.state.yelpAddress}
         /> : null }
 
         { this.state.showMyFavs ? <MyFavsFeed
@@ -377,6 +398,7 @@ class Layout extends React.Component {
           addToFavorites={this.addToFavorites.bind(this)}
           categoryData={this.state.categoryData}
         /> : null }
+
       </div>
     );
   }

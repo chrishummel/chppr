@@ -6,16 +6,27 @@ import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import RaisedButton from 'material-ui/lib/raised-button';
 import CardText from 'material-ui/lib/card/card-text';
-import FlatButton from 'material-ui/lib/flat-button'
+import FlatButton from 'material-ui/lib/flat-button';
+import Dialog from 'material-ui/lib/dialog';
 
 export default class DishCard extends React.Component {
 
   constructor() {
     super()
     this.state = {
-      favorited: false
+      favorited: false,
+      open:false
     }
   }
+  handleOpen = () => {
+    this.setState({open: true});
+    this.props.getYelp(this.props.data.yelp_id);
+    this.learnMore();
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
 
   handleFavClick() {
     if (!this.state.favorited) {
@@ -27,20 +38,15 @@ export default class DishCard extends React.Component {
     if (obj && obj.type !== 'undefined') return obj.type;
     return 'Some Category';
   }
-  
-
-  learnMore() {
-    let id = this.props.data.yelp_id;
-    this.props.getYelp(id);
-  }
 
   render() {
-    console.log('our userdata:',this.props.userData);
-
-
+    const customContentStyle = {
+      width: '100%',
+      maxWidth: 'none',
+    };
     const cardStyle = {
       padding: "30px",
-      height: "650px"
+      height: "700px"
     };
 
     const imageStyle = {
@@ -80,10 +86,6 @@ export default class DishCard extends React.Component {
             title={this.props.data.dish_name}
             subtitle={this.props.data.rest_name}
           />
-          <FlatButton 
-            label="learn more"
-            onClick={this.learnMore}
-          />
           <div>
             <strong style={{clear: "none", float: "right"}}>
               ${this.props.data.price}
@@ -95,16 +97,48 @@ export default class DishCard extends React.Component {
             </span>
           </div>
           <div>
+            <Dialog
+              title={this.props.yelpBasics ? this.props.yelpBasics.name : 'loading...'}
+              //actions={actions}
+              modal={false}
+              open={this.state.open}
+              onRequestClose={this.handleClose}
+            >
+              {this.props.yelpBasics ? 
+                <div>
+                  <img style={{float:"left",marginRight:"20px"}}src={this.props.yelpBasics.image_url} />
+                  <img src={this.props.yelpBasics.rating_img_url} />
+                  <blockquote>{this.props.yelpBasics.snippet_text}</blockquote>
+                  <p style={{clear:"both"}}>
+                      {this.props.yelpBasics.display_phone}<br />
+                      {this.props.yelpAddress.address}<br/>
+                      {this.props.yelpAddress.city}<br/>
+                      {this.props.yelpAddress.state_code}<br />
+                      {this.props.yelpAddress.postal_code}
+                    
+                  </p>
+                </div>
+                : 'no info available'
+              }
+            </Dialog>
+            
+          </div>
+          <RaisedButton 
+            label="learn more"
+            secondary={true}
+            style={customContentStyle}
+            onTouchTap={this.handleOpen}
+            //onClick={this.learnMore.bind(this)}
+          />
           <CardActions>
-            <FlatButton 
+            <RaisedButton 
+              primary={true}
+              style={customContentStyle}
               label={this.state.favorited ? "💙💙💙" : "Add to Favorites"} 
-              onClick={this.handleFavClick.bind(this)} 
+              onClick={this.handleFavClick.bind(this)}
+              disabled={this.state.favorited ? true : false} 
             />
           </CardActions>
-
-          </div>
-
-
         </Card>
       </div>
     );

@@ -54,10 +54,8 @@ export default class AuthPanel extends React.Component {
           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
           
-        >
-        <RaisedButton onClick={this.yelp.bind(this)} label="yelp" default={true} style={styles.button} />  
-
-          <div style={styles.popover}>
+        > 
+          <div style={styles.popover} class="signin">
             <a href="/auth/facebook">Login with Facebook</a>
           </div>
         </Popover>
