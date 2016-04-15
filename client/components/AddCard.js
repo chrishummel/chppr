@@ -101,7 +101,7 @@ export default class AddCard extends React.Component {
           /><br/>
           <TextField
             onChange={this.handleRestaurantCity.bind(this)}
-            floatingLabelText="Enter Name of Restaurant"
+            floatingLabelText="Enter City"
           /><br/>
           <TextField
             onChange={this.handleDishPrice.bind(this)}
