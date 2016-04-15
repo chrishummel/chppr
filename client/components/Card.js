@@ -18,10 +18,10 @@ export default class DishCard extends React.Component {
   }
 
   handleFavClick() {
-  
-    this.setState({favorited: true})
-    this.props.addToFavorites(this.props.data.postID);
-    
+    if (!this.state.favorited) {
+      this.setState({favorited: true})
+      this.props.addToFavorites(this.props.data.postID);
+    }
   }
   
 
