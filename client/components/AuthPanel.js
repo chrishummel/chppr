@@ -18,6 +18,12 @@ export default class AuthPanel extends React.Component {
   fbAuth(event){
     this.props.getFBToken();
   }
+
+  yelp() {
+    this.props.request_yelp();
+  }
+
+
   render() {
     console.log("AuthPanel props:", this.props);
     const styles = {
@@ -29,7 +35,7 @@ export default class AuthPanel extends React.Component {
       },
     };
     return (
-      <div>
+      <div float="right">
         {this.props.yummy ? 
           <div class="user">
             <img src={this.props.yummy.photo} />
@@ -49,6 +55,8 @@ export default class AuthPanel extends React.Component {
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
           
         >
+        <RaisedButton onClick={this.yelp.bind(this)} label="yelp" default={true} style={styles.button} />  
+
           <div style={styles.popover}>
             <a href="/auth/facebook">Login with Facebook</a>
           </div>

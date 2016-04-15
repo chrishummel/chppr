@@ -32,6 +32,33 @@ export default class Navbar extends React.Component {
     this.props.stateToggle('showAdd');
   }
 
+  // getFavs() {
+  //   var that = this;
+  //   fetch('http://localhost:4000/myfavs', {
+  //     method: 'GET',
+  //     headers: {  
+  //          //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+  //         'Accept': 'application/json',
+  //        },
+  //     body: {userID: 2}     
+  //   })
+  //   .then(function(res) {
+  //     return res.json();
+  //   })
+  //   .then(function(json) {
+  //     console.log('got this json', json);
+  //     that.setState({cardData: json})
+  //   })
+  //   .catch(function(err) {
+  //     console.log('something went wrong getting data', err);
+  //   });
+
+  // }
+
+  // showFavs() {
+  //   this.props.getFavs();
+  // }
+
   render () {
     console.log('navbar props',this.props)
     const styles = {
@@ -63,47 +90,68 @@ export default class Navbar extends React.Component {
     };
 
     return (
-      <Toolbar style={styles.toolbar}>
-        <ToolbarTitle style={styles.title} text="YumSnap!" />
-        <RaisedButton primary={true} onClick={this.handleShowAdd.bind(this)} label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} default={true} style={styles.button} />  
-        
-        <ToolbarGroup firstChild={true} float="left">
-          <DropDownMenu style={styles.dropdown} value={this.props.category} onChange={this.handleCategory.bind(this)}>
-              <MenuItem value={null} primaryText="All"/>
-              <MenuItem value={1} primaryText="Mexican"/>
-              <MenuItem value={2} primaryText="American"/>
-              <MenuItem value={3} primaryText="Asian"/>
-              <MenuItem value={4} primaryText="Italian"/>
-              <MenuItem value={5} primaryText="BBQ"/>
-          </DropDownMenu>
-          <Checkbox
-            value="veg"
-            onClick={this.handleToggle.bind(this)}
-            label="Vegetarian"
-            style={styles.checkbox}
-          />
-          <Checkbox
-            value="gf"
-            label="Gluten-free"
-            onClick={this.handleToggle.bind(this)}
-            style={styles.checkbox}
-          />
-          <Checkbox
-            value="noSpice"
-            label="Not-Spicy"
-            onClick={this.handleToggle.bind(this)}
-            style={styles.checkbox}
-          />
-        </ToolbarGroup>
-        <ToolbarGroup float="right">
-          <AuthPanel 
-            authToggle={this.props.authToggle.bind(this)}
-            auth={this.props.auth}
-            yummy={this.props.yummy}
-            getFBToken={this.props.getFBToken.bind(this)}
-          />
-        </ToolbarGroup>
-      </Toolbar>
+      <div>
+        <Toolbar style={styles.toolbar}>
+          <ToolbarTitle style={styles.title} text="YumSnap!" float="left" />
+          
+          <ToolbarGroup float="right">
+            <AuthPanel 
+              authToggle={this.props.authToggle.bind(this)}
+              auth={this.props.auth}
+              yummy={this.props.yummy}
+              getFBToken={this.props.getFBToken.bind(this)}
+            />
+          </ToolbarGroup>
+        </Toolbar>
+        <Toolbar style={{
+          background: '#fff',
+          border: '1px solid #ccc'
+        }}>
+          <RaisedButton 
+            primary={true} 
+            onClick={this.handleShowAdd.bind(this)} 
+            label={!this.props.showAdd ? "ADD DISH" : "CANCEL"} 
+            default={true} style={styles.button} 
+            disabled={!this.props.yummy}
+            float="left"
+          />  
+          
+          <ToolbarGroup style={{ 
+              float       : 'none', 
+              width       : '600px',
+              marginLeft  : 'auto',
+              marginRight : 'auto'
+          }}>
+            <DropDownMenu style={styles.dropdown} value={this.props.category} onChange={this.handleCategory.bind(this)}>
+                <MenuItem value={null} primaryText="All"/>
+                <MenuItem value={1} primaryText="Mexican"/>
+                <MenuItem value={2} primaryText="American"/>
+                <MenuItem value={3} primaryText="Asian"/>
+                <MenuItem value={4} primaryText="Italian"/>
+                <MenuItem value={5} primaryText="BBQ"/>
+            </DropDownMenu>
+            <Checkbox
+              value="veg"
+              onClick={this.handleToggle.bind(this)}
+              label="Vegetarian"
+              style={styles.checkbox}
+            />
+            <Checkbox
+              value="gf"
+              label="Gluten-free"
+              onClick={this.handleToggle.bind(this)}
+              style={styles.checkbox}
+            />
+            <Checkbox
+              value="noSpice"
+              label="Not-Spicy"
+              onClick={this.handleToggle.bind(this)}
+              style={styles.checkbox}
+            />
+          </ToolbarGroup>
+        </Toolbar>
+      </div>
+
     )
   }
 }

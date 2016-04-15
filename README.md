@@ -32,3 +32,12 @@ To start the client server npm run dev (for local host:8080)
 to drop the database
 
 dropdb yumsnap
+
+Yelp API:
+Consumer Key  2kWm_qTCzUEfSVYUjU2fIw
+Consumer Secret qaR9eRgkjIfoz3RKvubcVhUnbCk
+Token GpE0chVSnbgJ0edMj1DAor8mJuv3sGyL
+Token Secret  kF-EkG1-b2mE9olO9LEdFk0ER6c
+Generate new API v2.0 token/secret
+
+
