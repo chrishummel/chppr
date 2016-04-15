@@ -31,6 +31,10 @@ export default class DishCard extends React.Component {
     })
   }
 
+  getYelp() {
+    
+  }
+
   render() {
 
     const cardStyle = {
@@ -86,6 +90,9 @@ export default class DishCard extends React.Component {
           </row>
           <CardActions>
             <FlatButton label="Add to Favorites" onClick={this.addToFavorites} />
+          </CardActions>
+          <CardActions>
+            <FlatButton label="Find out More" onClick={this.getYelp} />
           </CardActions>
         </Card>
       </div>
