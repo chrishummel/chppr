@@ -32,6 +32,33 @@ export default class Navbar extends React.Component {
     this.props.stateToggle('showAdd');
   }
 
+  // getFavs() {
+  //   var that = this;
+  //   fetch('http://localhost:4000/myfavs', {
+  //     method: 'GET',
+  //     headers: {  
+  //          //"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+  //         'Accept': 'application/json',
+  //        },
+  //     body: {userID: 2}     
+  //   })
+  //   .then(function(res) {
+  //     return res.json();
+  //   })
+  //   .then(function(json) {
+  //     console.log('got this json', json);
+  //     that.setState({cardData: json})
+  //   })
+  //   .catch(function(err) {
+  //     console.log('something went wrong getting data', err);
+  //   });
+
+  // }
+
+  // showFavs() {
+  //   this.props.getFavs();
+  // }
+
   render () {
     console.log('navbar props',this.props)
     const styles = {
@@ -76,6 +103,8 @@ export default class Navbar extends React.Component {
               <MenuItem value={4} primaryText="Italian"/>
               <MenuItem value={5} primaryText="BBQ"/>
           </DropDownMenu>
+
+          
           <Checkbox
             value="veg"
             onClick={this.handleToggle.bind(this)}

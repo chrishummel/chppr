@@ -27,7 +27,7 @@ var multer  = require('multer')
 var crypto = require("crypto")
 var Posts = require('./models/posts');
 var Users = require('./models/users');
-var favorites = require('./models/favorites');
+var Favorites = require('./models/favorites');
 
 
 var storage = multer.diskStorage({
@@ -143,9 +143,9 @@ app.post('/categories', function(req, res) {
 //app.post('/addFav', services.addFav);
 app.post('/myfavs', function(req, res) {
   var fav = req.body;
-  Favorites.add(fav.userID, fav.postID)
-  .then(function(res) {
-    res.status(201).send(res);
+  return Favorites.add(fav.userID, fav.postID)
+  .then(function(resp) {
+    res.status(201).send(resp);
   })
   .catch(function(err) {
     res.status(400).send(err);
@@ -153,22 +153,25 @@ app.post('/myfavs', function(req, res) {
 });
 
 app.get('/myfavs', function(req, res) {
-  return Favorites.getFavByUserID(req.body.userId)
+    return Favorites.getFavByUserID(2)
     .then(function(resp) {
       console.log('get MyFav resp: ', resp);
       return Promise.all(resp.map(function(dbObj) {
         var post = {};
-        post.query = {};
-        post.query.unique_id = dbObj.postID;
-        return Post.single(post);
+        // post.query = {};
+        // post.query.unique_id = dbObj.postID;
+        var postID = dbObj.postID;
+        return Posts.single(postID);
       }))
     })
     .then(function(resp) {
+      //console.log("post single: ", resp);
       var flattenResp = resp.reduce(function(a, b) { return a.concat(b) });
       res.json(flattenResp);
     })
     .catch(function(err) {
       console.log('server userFav err:', err);
+      res.status(400).send(err);
     })
 
 });

@@ -18,6 +18,7 @@ export default class AuthPanel extends React.Component {
   fbAuth(event){
     this.props.getFBToken();
   }
+
   render() {
     console.log("AuthPanel props:", this.props);
     const styles = {

@@ -22,10 +22,10 @@ Post.loader = function () {
     });
 };
 
-Post.single = function (trailID) {
+Post.single = function (postID) {
   return db.select('*').from('posts').where({postID: postID})
     .then(function(resp) {
-      console.log('post.single resp: ', resp);
+      return resp;
     })
     .catch(function(err) {
       console.error('post.single err:', err);

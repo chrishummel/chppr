@@ -13,8 +13,8 @@ export default class DishCard extends React.Component {
   addToFavorites() {
     var that = this;
     var fav = {
-      user_id: 1,
-      post_id: 1
+      userID: 2,
+      postID: 1
     }
     let data = JSON.stringify(fav);
 

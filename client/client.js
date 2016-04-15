@@ -45,6 +45,9 @@ class Layout extends React.Component {
 
     this.getCardData();
   }
+
+  
+
   getFBToken(){
     //console.log('calling something');
     request.get('/auth/facebook')
