@@ -31,7 +31,6 @@ class Layout extends React.Component {
       cardData: [],
       categoryData: [],
       showAdd: false,
-      showFavs: false,
       dishName: '',
       restaurantName: '',
       dishDescription: '',
@@ -304,7 +303,7 @@ class Layout extends React.Component {
       return res.json()
     })
     .then(function(json){
-      console.log('before or after')
+      console.log('my favs:',that.state.showMyFavs)
       that.setState({myFavs: json})
     })
     .catch(function(err) {
@@ -322,14 +321,13 @@ class Layout extends React.Component {
         <Navbar
           auth={this.state.auth}
           yummy={this.state.yummy}
-          myFavs={this.state.myFavs}
           authToggle={this.authToggle.bind(this)}
           getFBToken={this.getFBToken.bind(this)}
           veg={this.state.veg}
           gf={this.state.gf}
           noSpice={this.state.noSpice}
           showAdd={this.state.showAdd}
-          showFavs={this.state.showFavs}
+          showMyFavs={this.state.showMyFavs}
           category={this.state.category}
           categorySelect={this.categorySelect.bind(this)}
           stateToggle={this.stateToggle.bind(this)}
@@ -356,7 +354,7 @@ class Layout extends React.Component {
           dishCat={this.state.dishCat}
 
           /> : null }
-        <CardFeed
+        { !this.state.showMyFavs ? <CardFeed
           boolVeg={this.state.veg}
           boolGF={this.state.gf}
           boolNoSpice={this.state.noSpice}
@@ -365,7 +363,7 @@ class Layout extends React.Component {
           addToFavorites={this.addToFavorites.bind(this)}
           userData={this.state.userData}
           categoryData={this.state.categoryData}
-        />
+        /> : null }
 
         { this.state.showMyFavs ? <MyFavsFeed
           boolVeg={this.state.veg}
@@ -376,7 +374,7 @@ class Layout extends React.Component {
           userData={this.state.userData}
           addToFavorites={this.addToFavorites.bind(this)}
           categoryData={this.state.categoryData}
-        /> : null}
+        /> : null }
       </div>
     );
   }

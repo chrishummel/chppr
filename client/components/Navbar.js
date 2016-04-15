@@ -33,10 +33,8 @@ export default class Navbar extends React.Component {
   }
 
   handleShowFavs() {
-    console.log('in nav bar: ', this.props.showFavs)
-    this.props.stateToggle('showFavs')
+    this.props.stateToggle('showMyFavs')
     this.props.getUserFavs()
-    console.log('in nav bar: ', this.props.showFavs)
   }
 
   // getFavs() {
@@ -67,7 +65,7 @@ export default class Navbar extends React.Component {
   // }
 
   render () {
-    console.log('navbar props',this.props)
+    //console.log('navbar props',this.props)
     const styles = {
       title: {
         color: "red",
@@ -126,7 +124,7 @@ export default class Navbar extends React.Component {
           <RaisedButton 
             primary={true} 
             onClick={this.handleShowFavs.bind(this)} 
-            label={"My Favorites"} 
+            label={this.props.showMyFavs ? "Home Feed" : "My Favorites"} 
             default={true} style={styles.button} 
             disabled={!this.props.yummy}
             float="left"

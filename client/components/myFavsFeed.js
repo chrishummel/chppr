@@ -1,7 +1,7 @@
 import React from "react";
 import FavsCard from "./FavsCard"
 
-export default class myFavsFeed extends React.Component {
+export default class MyFavsFeed extends React.Component {
   matchesUserFilters(c) {
     if (this.props.category !== null && this.props.category !== c.category) return false;
     if (this.props.boolNoSpice && c.spicy) return false;
